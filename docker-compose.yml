@@ -1,0 +1,44 @@
+version: '3.11-slim'
+
+services:
+  fastapi:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - mongodb
+      - redis
+
+  next:
+    build:
+      context: ./nextjs
+      dockerfile: Dockerfile
+    volumes:
+      - ./nextjs:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      BACKEND_SERVER: http://localhost:8000/api/
+
+  mongodb:
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=bringthemhome
+      - MONGO_INITDB_ROOT_PASSWORD=bringthemhome
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:latest
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mongodb_data:
+  redis_data:
