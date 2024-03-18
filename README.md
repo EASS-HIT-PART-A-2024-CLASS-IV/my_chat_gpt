@@ -55,7 +55,7 @@ This Full-Stack User Management System combines a robust backend built with Fast
 ## Installation
 * Clone the project repository:
    ```shell
-   git clone https://github.com/yourusername/yourprojectname.git
+   git clone https://github.com/georgekhananaev/fullstack-user-management-system.git
    ```
 
 * Create .env file, in the root folder.
