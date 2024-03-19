@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import {
@@ -14,31 +14,22 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import BlockIcon from '@mui/icons-material/Block';
 import { amber, blue, deepPurple, green, pink, red } from '@mui/material/colors';
 import Loading from "@/components/loading";
-import {getProfile} from "@/api/endpoints";
+import { getProfile } from "@/api/endpoints";
+import useAuthenticatedRoute from "@/hooks/use-authenticated-route";
+import { useAuth } from "@/hooks/auth-context";
 
-export default function UserProfile() {
+function UserProfile() {
+  const { accessToken } = useAuth();
   const [editMode, setEditMode] = useState(false);
   const [editedUser, setEditedUser] = useState({});
 
-  // Use useEffect to access localStorage, ensuring this runs only on the client side
-  const [storedToken, setStoredToken] = useState(null);
-  useEffect(() => {
-    setStoredToken(localStorage.getItem('accessToken'));
-  }, []);
-
   const { data: user, isLoading, isError } = useQuery(
     'userProfile',
-    () => getProfile(storedToken),
+    () => getProfile(accessToken),
     {
-      enabled: !!storedToken, // Only run query if token exists
+      enabled: !!accessToken, // Only run query if token exists
     }
   );
-
-  useEffect(() => {
-    if (!editMode && user) {
-      setEditedUser(user); // Sync editedUser state when not in edit mode and user data changes
-    }
-  }, [user, editMode]);
 
   const handleEditToggle = () => {
     setEditMode(!editMode);
@@ -124,3 +115,5 @@ export default function UserProfile() {
     </Card>
   );
 }
+
+export default useAuthenticatedRoute(UserProfile);

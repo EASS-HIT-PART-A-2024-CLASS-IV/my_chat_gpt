@@ -1,24 +1,50 @@
 import React from 'react';
-import {Box, Container, Typography} from '@mui/material';
+import { Box, Container, Typography, Paper, Grid, Button } from '@mui/material';
 import useAuthenticatedRoute from "@/hooks/use-authenticated-route.js";
 import {useAuth} from "@/hooks/auth-context";
 
 const Dashboard = () => {
-    const {isAuthenticated} = useAuth(); // Using the hypothetical useAuth hook
+    const { userProfile } = useAuth(); // Assuming the useAuth hook provides user details
+
+    console.log(userProfile)
+    // Example content for a dashboard
+    const stats = [
+        { label: 'Total Projects', value: 12 },
+        { label: 'Completed Tasks', value: 87 },
+        { label: 'Open Tickets', value: 5 },
+    ];
 
     return (
-        <Container>
-            <Box sx={{mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Typography component="h1" variant="h5">
-                    Dashboard
-                </Typography>
-                <Typography variant="body1">
-                    Welcome to your Dashboard!
-                </Typography>
+        <Container component="main" maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Typography component="h1" variant="h4" gutterBottom>
+                Dashboard
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+                Welcome back, {userProfile?.full_name || 'User'}!
+            </Typography>
+            <Grid container spacing={3} sx={{ mt: 2 }}>
+                {/* Stats Section */}
+                {stats.map((stat, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                        <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                                {stat.label}
+                            </Typography>
+                            <Typography component="p" variant="h4">
+                                {stat.value}
+                            </Typography>
+                        </Paper>
+                    </Grid>
+                ))}
+                {/* Additional Sections could go here */}
+            </Grid>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                <Button variant="contained" color="primary" onClick={() => alert('This could lead to more detailed stats or actions.')}>
+                    View More Details
+                </Button>
             </Box>
         </Container>
     );
 };
 
 export default useAuthenticatedRoute(Dashboard);
-

@@ -13,7 +13,7 @@ services:
       - mongodb
       - redis
 
-  next:
+  nextjs:
     build:
       context: ./nextjs
       dockerfile: Dockerfile

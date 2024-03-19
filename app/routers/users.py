@@ -4,7 +4,7 @@ from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Depends
 from starlette import status
 
-from app.classes.User import UserCreate, User
+from app.classes.User import UserCreate, User, UpdateUser
 from app.components.auth.check_permissions import check_permissions
 from app.components.auth.jwt_token_handler import get_jwt_username
 from app.components.hash_password import hash_password
@@ -92,8 +92,8 @@ async def create_user(user: UserCreate, username: str = Depends(get_jwt_username
         raise HTTPException(status_code=500, detail="An error occurred while creating the user.")
 
 
-@router.put("/users/{id}", response_model=User, dependencies=[Depends(check_permissions)])
-async def update_user(id: str, update_data: UserCreate, username: str = Depends(get_jwt_username)):
+@router.put("/users/{id}", dependencies=[Depends(check_permissions)])
+async def update_user(id: str, update_data: UpdateUser, username: str = Depends(get_jwt_username)):
     try:
         update_data_dict = update_data.dict(exclude_unset=True)
         if "password" in update_data_dict:

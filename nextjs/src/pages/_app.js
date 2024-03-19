@@ -20,7 +20,7 @@ function MyApp({Component, pageProps}) {
                 <Toaster position="bottom-right" reverseOrder={false}/>
                 <AuthProvider> {/* Wrap your component tree with AuthProvider */}
                     <Menu title="Your Website Name" navItems={menuItems}/>
-                    <WrapperEffects effect={"fadeIn"} pageProps={pageProps}>
+                    <WrapperEffects effect={"softSlideInUp"} pageProps={pageProps}>
                         <Container sx={{mt: 3}}>
                             <Component {...pageProps} />
                         </Container>

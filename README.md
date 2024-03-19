@@ -87,6 +87,10 @@ This Full-Stack User Management System combines a robust backend built with Fast
 ### Full Docker Installation (4 Containers)
 * This is complete installation, mongodb and redis servers included.
     ```shell
+    docker-compose build --no-cache ; docker-compose up -d
+    ``` 
+  or
+    ```shell
     docker-compose up -d --build
     ```
   *in .env variables change mongodb_server=localhost to mongodb_server=mongodb if you are using docker-compose.* 

@@ -18,7 +18,7 @@ const keyframes = `
 
 const modalStyle = (animation) => ({
     position: 'absolute',
-    top: '50%',
+    top: '30%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 340,
@@ -45,7 +45,7 @@ const ConfirmModal = ({
 
     const handleClose = () => {
         // Start the zoom-out animation
-        setAnimation('gentleZoomOut 0.5s ease-out forwards');
+        setAnimation('gentleZoomOut 0.3s ease-out forwards');
         // Close the modal after the animation finishes
         setTimeout(() => {
             setIsOpen(false);
@@ -57,7 +57,7 @@ const ConfirmModal = ({
     const handleOpen = () => {
         setIsOpen(true);
         // Apply the zoom-in effect when opening
-        setAnimation('gentleZoomIn 0.5s ease-out forwards');
+        setAnimation('gentleZoomIn 0.3s ease-out forwards');
     };
 
     return (

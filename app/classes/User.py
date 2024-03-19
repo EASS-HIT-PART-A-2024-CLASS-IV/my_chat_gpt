@@ -17,9 +17,16 @@ class UserBase(BaseModel):
     disabled: Optional[bool] = None  # Optional field to disable the user
     role: Role = Role.user  # Default role
 
+class UpdateUser(BaseModel):
+    username: Optional[str] = None  # Now optional
+    email: Optional[EmailStr] = None  # Now optional, but still validated if provided
+    full_name: Optional[str] = None  # Now optional
+    disabled: Optional[bool] = None  # Remains optional
+    role: Optional[Role] = Role.user  # Optional, with a default value if not provided
+    password: Optional[str] = None
 
 class UserCreate(UserBase):
-    password: str  # Password field for user creation
+    password: Optional[str]  # Password field for user creation
 
 
 class User(UserBase):
