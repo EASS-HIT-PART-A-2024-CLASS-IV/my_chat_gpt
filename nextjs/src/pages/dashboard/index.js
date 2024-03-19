@@ -6,7 +6,6 @@ import {useAuth} from "@/hooks/auth-context";
 const Dashboard = () => {
     const {isAuthenticated} = useAuth(); // Using the hypothetical useAuth hook
 
-    console.log(isAuthenticated)
     return (
         <Container>
             <Box sx={{mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>

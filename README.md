@@ -105,7 +105,7 @@ Just the FastApi server. You must start mongodb server, redis server first. Chan
 * Start FastAPI server with Uvicorn
 
     ```shell
-    uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+    uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ```
 
 ### Start just the Frontend

@@ -23,7 +23,7 @@ const Footer = () => {
                     href="https://github.com/georgekhananaev"
                     target="_blank"
                     rel="noopener noreferrer"
-                    sx={{color: 'inherit', ml: 0.5}}
+                    sx={{color: 'inherit', mx: 0.5}}
                 >
                     George Khananaev
                 </Link>
