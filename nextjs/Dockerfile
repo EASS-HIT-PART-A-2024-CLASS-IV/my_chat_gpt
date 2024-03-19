@@ -2,7 +2,7 @@
 FROM node:21.7.1-slim
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /nextjs
 
 # Copy the current directory contents into the container at /app
 COPY . .
