@@ -10,7 +10,8 @@ import {AuthProvider} from "@/hooks/auth-context";
 import {QueryClient, QueryClientProvider} from "react-query";
 import {darkTheme} from "@/theme/dark-theme";
 import {loadSlim} from "tsparticles-slim";
-import {Particles} from "react-tsparticles"; // if you are going to use `loadSlim`, install the "tsparticles-slim" package too.
+import {Particles} from "react-tsparticles";
+import ScrollToTop from "@/components/scroll-top-top"; // if you are going to use `loadSlim`, install the "tsparticles-slim" package too.
 
 const queryClient = new QueryClient();
 
@@ -89,13 +90,18 @@ function MyApp({Component, pageProps}) {
                     },
                     detectRetina: true,
                 }}/>
-                <Menu logo={"logo.svg"} title="Your Website Name" navItems={menuItems}/>
+                <ScrollToTop>
+                <Menu title="Your Website Name" navItems={menuItems}/>
                 <WrapperEffects effect={"softSlideInDown"} pageProps={pageProps}>
+
                     <Container sx={{mt: 3}}>
                         <Component {...pageProps} />
                     </Container>
+
                     <Footer/>
+
                 </WrapperEffects>
+                    </ScrollToTop>
             </ThemeProvider>
             </AuthProvider>
         </QueryClientProvider>

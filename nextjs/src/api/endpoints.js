@@ -61,3 +61,27 @@ export const createUser = async (user, accessToken) => {
     });
     return data;
 };
+
+
+// ChatGPT
+export const fetchChatResponse = async (question, accessToken, model) => {
+    // Simulated API call
+    console.log("Sending question to the API:", question, "with model", model);
+
+    const url = new URL('http://localhost:8000/api/v1/chat/');
+    url.searchParams.append('question', question);
+    url.searchParams.append('model', model);
+
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'accept': 'application/json',
+            'api-key': accessToken,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+};
