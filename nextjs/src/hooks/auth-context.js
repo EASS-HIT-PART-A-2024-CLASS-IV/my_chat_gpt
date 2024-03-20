@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
-// noinspection JSUnusedLocalSymbols
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import {getProfile, logout as apiLogout} from "@/api/endpoints";
+import { getProfile, logout as apiLogout } from "@/api/endpoints";
 
 const AuthContext = createContext();
 
@@ -10,6 +8,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(null);
+    const [userProfile, setUserProfile] = useState(null); // Added state for user profile
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -19,9 +18,11 @@ export const AuthProvider = ({ children }) => {
                 const storedToken = Cookies.get('accessToken');
                 if (storedToken) {
                     try {
-                        await getProfile(storedToken);
+                        const profile = await getProfile(storedToken); // Fetch user profile
                         setIsAuthenticated(true);
                         setAccessToken(storedToken);
+                        setUserProfile(profile); // Store user profile in state
+                        // Optionally, store profile in cookies or localStorage here, but consider security implications
                     } catch (error) {
                         setIsAuthenticated(false);
                         Cookies.remove('accessToken');
@@ -32,10 +33,8 @@ export const AuthProvider = ({ children }) => {
         };
 
         checkForExistingSession().then(() => {
-            // Empty function to silence any warnings about unhandled promise rejections
-            // No operation is performed here
+            // Handling promise
         }).catch(error => {
-            // Handle any errors thrown by the async function
             console.error("Error in session check:", error);
         });
     }, []);
@@ -50,6 +49,7 @@ export const AuthProvider = ({ children }) => {
         }
         setIsAuthenticated(false);
         setAccessToken(null);
+        setUserProfile(null); // Clear user profile on logout
         if (typeof window !== 'undefined') {
             Cookies.remove('accessToken');
         }
@@ -60,11 +60,12 @@ export const AuthProvider = ({ children }) => {
         accessToken,
         setAccessToken: (token) => {
             const inTwoHours = new Date(new Date().getTime() + 2 * 60 * 60 * 1000);
-            Cookies.set('accessToken', token, {expires: inTwoHours, secure: true, sameSite: 'strict'}); // Cookie expires in 2 hours
+            Cookies.set('accessToken', token, { expires: inTwoHours, secure: true, sameSite: 'strict' }); // Cookie expires in 2 hours
             setAccessToken(token);
         },
         isAuthenticated,
         setIsAuthenticated,
+        userProfile, // Add userProfile to the context value
         isLoading,
         logout,
     };

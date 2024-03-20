@@ -4,9 +4,8 @@ import useAuthenticatedRoute from "@/hooks/use-authenticated-route.js";
 import {useAuth} from "@/hooks/auth-context";
 
 const Dashboard = () => {
-    const { userProfile } = useAuth(); // Assuming the useAuth hook provides user details
+    const { userProfile } = useAuth();
 
-    console.log(userProfile)
     // Example content for a dashboard
     const stats = [
         { label: 'Total Projects', value: 12 },
