@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
-import axios from 'axios';
 import {Fab, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,10 +7,10 @@ import UserDialog from "@/sections/users/user-dialog";
 import Loading from "@/components/loading";
 import ErrorDisplay from "@/components/error";
 import {useAuth} from "@/hooks/auth-context";
-import useAuthenticatedRoute from "@/hooks/use-authenticated-route";
 import AddIcon from '@mui/icons-material/Add';
 import {Box} from "@mui/system";
 import toast from "react-hot-toast";
+import {createUser, deleteUser, fetchUsers, updateUser} from "@/api/endpoints";
 
 export const initialUser = {
     "username": '',
@@ -21,44 +20,6 @@ export const initialUser = {
     "role": 'user',
     "password": ''
 }
-
-// Create a basic axios instance without auth headers
-const apiClient = axios.create({
-    baseURL: 'http://localhost:8000/api/v1',
-    headers: {
-        'accept': 'application/json',
-    },
-});
-
-// Update your API calls to include the accessToken dynamically
-const fetchUsers = async (accessToken) => {
-    const {data} = await apiClient.get('/users/', {
-        headers: {'api-key': accessToken}
-    });
-    return data;
-};
-
-const updateUser = async (user, accessToken) => {
-    const {data} = await apiClient.put(`/users/${user._id}`, user, {
-        headers: {'api-key': accessToken}
-    });
-    return data;
-};
-
-const deleteUser = async (id, accessToken) => {
-    await apiClient.delete(`/users/${id}`, {
-        headers: {'api-key': accessToken}
-    });
-    return id;
-};
-
-const createUser = async (user, accessToken) => {
-    console.log(user)
-    const {data} = await apiClient.post('/users/', user, {
-        headers: {'api-key': accessToken}
-    });
-    return data;
-};
 
 function UserTable() {
     const {accessToken} = useAuth();

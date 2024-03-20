@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+// noinspection JSUnusedLocalSymbols
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import Cookies from 'js-cookie';
-import { getProfile, logout as apiLogout } from "@/api/endpoints";
+import {getProfile, logout as apiLogout} from "@/api/endpoints";
 
 const AuthContext = createContext();
 
@@ -29,7 +31,13 @@ export const AuthProvider = ({ children }) => {
             setIsLoading(false);
         };
 
-        checkForExistingSession();
+        checkForExistingSession().then(() => {
+            // Empty function to silence any warnings about unhandled promise rejections
+            // No operation is performed here
+        }).catch(error => {
+            // Handle any errors thrown by the async function
+            console.error("Error in session check:", error);
+        });
     }, []);
 
     const logout = async () => {
@@ -51,7 +59,8 @@ export const AuthProvider = ({ children }) => {
     const value = {
         accessToken,
         setAccessToken: (token) => {
-            Cookies.set('accessToken', token, { expires: 7, secure: true, sameSite: 'strict' }); // Adjust options as needed
+            const inTwoHours = new Date(new Date().getTime() + 2 * 60 * 60 * 1000);
+            Cookies.set('accessToken', token, {expires: inTwoHours, secure: true, sameSite: 'strict'}); // Cookie expires in 2 hours
             setAccessToken(token);
         },
         isAuthenticated,
