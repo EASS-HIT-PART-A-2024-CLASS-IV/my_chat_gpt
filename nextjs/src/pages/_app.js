@@ -19,16 +19,13 @@ function MyApp({Component, pageProps}) {
         await loadSlim(engine);
     }, []);
 
-    const particlesLoaded = useCallback(async container => {
-        await console.log(container);
-    }, []);
     return (
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline/>
                 <Toaster position="bottom-right" reverseOrder={false}/>
-                <Particles id="tsparticles" init={particlesInit} loaded={particlesLoaded} options={{
+                <Particles id="tsparticles" init={particlesInit} options={{
                     fpsLimit: 120,
                     interactivity: {
                         events: {

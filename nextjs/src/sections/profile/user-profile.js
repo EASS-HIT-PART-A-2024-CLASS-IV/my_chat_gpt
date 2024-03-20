@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import axios from 'axios';
 import {
   Avatar, Card, CardContent, CardHeader, Grid, IconButton, TextField, Typography
 } from '@mui/material';
@@ -15,7 +14,6 @@ import BlockIcon from '@mui/icons-material/Block';
 import { amber, blue, deepPurple, green, pink, red } from '@mui/material/colors';
 import Loading from "@/components/loading";
 import { getProfile } from "@/api/endpoints";
-import useAuthenticatedRoute from "@/hooks/use-authenticated-route";
 import { useAuth } from "@/hooks/auth-context";
 
 function UserProfile() {
@@ -49,6 +47,7 @@ function UserProfile() {
   if (isLoading || !user) return <Loading />;
   if (isError) return <div>Error loading user profile.</div>;
 
+  // noinspection JSUnresolvedReference
   return (
     <Card sx={{ m: 2, borderRadius: '16px', boxShadow: 3 }}>
       <CardHeader

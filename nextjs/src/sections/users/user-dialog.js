@@ -5,18 +5,6 @@ import {
 } from '@mui/material';
 import { initialUser } from "@/sections/users/users-table";
 
-const keyframes = `
-@keyframes gentleZoomIn {
-    from { transform: translate(-50%, -50%) scale(0.5); }
-    to { transform: translate(-50%, -50%) scale(1); }
-}
-
-@keyframes gentleZoomOut {
-    from { transform: translate(-50%, -50%) scale(1); }
-    to { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-}
-`;
-
 const modalStyle = (animation) => ({
   animation: animation,
   position: 'fixed', // Keeping it as 'fixed' to stay consistent with your needs

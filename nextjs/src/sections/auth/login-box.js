@@ -15,11 +15,12 @@ export default function LoginBox() {
         event.preventDefault();
         try {
             const data = await getToken(username, password);
+            // noinspection JSUnresolvedReference
             if (data.access_token) {
                 setAccessToken(data.access_token); // Update accessToken in context
                 setIsAuthenticated(true); // Update isAuthenticated state
                 toast.success('Login successful!');
-                router.push('/dashboard'); // Redirect to the dashboard or another path as needed
+                await router.push('/dashboard'); // Redirect to the dashboard or another path as needed
             } else {
                 // Handle cases where login is successful but no token is returned
                 toast.error('Login succeeded, but no access token was returned.');

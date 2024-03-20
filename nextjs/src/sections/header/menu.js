@@ -30,6 +30,7 @@ export default function Menu({logo, title, navItems}) {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const handleClick = (path) => {
+        // noinspection JSIgnoredPromiseFromCall
         router.push(path);
     };
 
@@ -79,7 +80,7 @@ export default function Menu({logo, title, navItems}) {
                         </IconButton>
                     ) : (
                         filteredNavItems.map((item, index) => (
-                            <Tooltip title={item.tooltip}>
+                            <Tooltip title={item.tooltip} key={index}>
                                 <Button key={index} color="inherit" onClick={() => handleClick(item.path)}
                                         sx={{color: 'inherit'}}>
                                     <Box>{item.icon}</Box><Box>{item.label}</Box>

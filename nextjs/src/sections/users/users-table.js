@@ -1,6 +1,8 @@
+// noinspection JSIgnoredPromiseFromCall,JSUnresolvedReference
+
 import React, {useState} from 'react';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
-import {Fab, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
+import {Fab, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UserDialog from "@/sections/users/user-dialog";
@@ -8,7 +10,6 @@ import Loading from "@/components/loading";
 import ErrorDisplay from "@/components/error";
 import {useAuth} from "@/hooks/auth-context";
 import AddIcon from '@mui/icons-material/Add';
-import {Box} from "@mui/system";
 import toast from "react-hot-toast";
 import {createUser, deleteUser, fetchUsers, updateUser} from "@/api/endpoints";
 

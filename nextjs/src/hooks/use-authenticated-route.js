@@ -11,6 +11,7 @@ const useAuthenticatedRoute = (WrappedComponent, redirectUrl = '/login') => {
 
         React.useEffect(() => {
             if (!isLoading && !isAuthenticated) {
+                // noinspection JSIgnoredPromiseFromCall
                 router.push(redirectUrl);
             }
         }, [isAuthenticated, isLoading, router, redirectUrl]);

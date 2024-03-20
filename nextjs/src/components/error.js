@@ -1,8 +1,6 @@
 // components/ErrorDisplay.js
 import React from 'react';
-import { Alert, AlertTitle, Container, Typography } from '@mui/material';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { Box } from '@mui/system';
+import { Alert, AlertTitle, Container, Typography, Box} from '@mui/material';
 
 const ErrorDisplay = ({ message }) => {
   return (

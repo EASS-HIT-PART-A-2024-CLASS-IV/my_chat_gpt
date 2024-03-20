@@ -16,7 +16,7 @@ export default function LogoutButton() {
             setAccessToken(''); // Clear the access token in the context
             setIsAuthenticated(false); // Update isAuthenticated state
             toast.success('Logout successful!');
-            router.push('/'); // Redirect to the homepage or login page
+            await router.push('/'); // Redirect to the homepage or login page
         } catch (error) {
             console.error('Logout error:', error);
             toast.error('An error occurred during logout.');
