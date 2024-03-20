@@ -1,0 +1,9 @@
+a {
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+a:hover {
+    color: #9cb5ff;
+    transform: scale(1.1);
+}

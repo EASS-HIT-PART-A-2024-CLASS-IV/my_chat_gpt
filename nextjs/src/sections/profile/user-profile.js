@@ -116,4 +116,4 @@ function UserProfile() {
   );
 }
 
-export default useAuthenticatedRoute(UserProfile);
+export default UserProfile;

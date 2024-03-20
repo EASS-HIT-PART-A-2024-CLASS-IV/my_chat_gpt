@@ -1,36 +1,29 @@
-// LoginBox.js
-import React, {useState} from 'react';
-import {Box, Button, Container, TextField, Typography} from '@mui/material';
-import {useAuth} from "@/hooks/auth-context";
+import React, { useState } from 'react';
+import { Box, Button, Container, TextField, Typography } from '@mui/material';
+import { useAuth } from "@/hooks/auth-context"; // Ensure this is the correct path
 import toast from "react-hot-toast";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
+import { getToken } from "@/api/endpoints"; // Ensure this is the correct path
 
 export default function LoginBox() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const {setAccessToken} = useAuth();
-    const router = useRouter(); // Initialize useRouter hook
+    const { setAccessToken, setIsAuthenticated } = useAuth(); // Update based on the revised context
+    const router = useRouter();
 
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/token?username=${username}&password=${password}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            if (!response.ok) {
-                // Instead of throwing an error, directly show a toast message
-                toast.error('Login failed. Please check your credentials.');
-                return; // Stop execution if login failed
+            const data = await getToken(username, password);
+            if (data.access_token) {
+                setAccessToken(data.access_token); // Update accessToken in context
+                setIsAuthenticated(true); // Update isAuthenticated state
+                toast.success('Login successful!');
+                router.push('/dashboard'); // Redirect to the dashboard or another path as needed
+            } else {
+                // Handle cases where login is successful but no token is returned
+                toast.error('Login succeeded, but no access token was returned.');
             }
-
-            const data = await response.json();
-            setAccessToken(data.access_token); // Store the access token in context
-            toast.success('Login successful!'); // Show success message
-            await router.push('/dashboard'); // Redirect to dashboard
         } catch (error) {
             console.error('Login error:', error);
             toast.error('An error occurred during login.');
@@ -54,7 +47,7 @@ export default function LoginBox() {
                 <Typography component="h1" variant="h5" style={{color: '#fff', marginBottom: '20px'}}>
                     Sign in
                 </Typography>
-                <Box component="form" noValidate sx={{width: '100%'}} onSubmit={handleLogin}>
+                <Box component="form" noValidate sx={{ mt: 3, mb: 2, width: '100%' }} onSubmit={handleLogin}>
                     <TextField
                         margin="normal"
                         required
@@ -67,9 +60,7 @@ export default function LoginBox() {
                         variant="outlined"
                         color="primary"
                         onChange={(e) => setUsername(e.target.value)}
-                        InputProps={{
-                            style: {color: '#fff'},
-                        }}
+                        InputProps={{ style: { color: '#fff' } }}
                     />
                     <TextField
                         margin="normal"
@@ -83,15 +74,13 @@ export default function LoginBox() {
                         variant="outlined"
                         color="primary"
                         onChange={(e) => setPassword(e.target.value)}
-                        InputProps={{
-                            style: {color: '#fff'},
-                        }}
+                        InputProps={{ style: { color: '#fff' } }}
                     />
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{mt: 3, mb: 2, backgroundColor: '#1976d2'}}
+                        sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2' }}
                     >
                         Sign In
                     </Button>

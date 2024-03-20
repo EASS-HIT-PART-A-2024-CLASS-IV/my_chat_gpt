@@ -1,40 +1,27 @@
-// LogoutButton.js
-import React, {useState} from 'react';
-import {useAuth} from "@/hooks/auth-context";
+import React, { useState } from 'react';
+import { useAuth } from "@/hooks/auth-context"; // Ensure correct path
 import toast from "react-hot-toast";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import ConfirmModal from "@/components/confirmation-modal";
-
+import { logout as apiLogout } from "@/api/endpoints"; // Ensure correct path and avoid naming conflict
 
 export default function LogoutButton() {
-    const {setAccessToken} = useAuth();
+    const { accessToken, setAccessToken, setIsAuthenticated } = useAuth(); // Correctly destructure needed functions
     const router = useRouter();
-    const [showCancelConfirmation, setShowCancelConfirmation] = useState(false)
+    const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
 
     const handleLogout = async () => {
         try {
-            const currentToken = localStorage.getItem('accessToken'); // Assuming the token is stored in localStorage
-            // If you're storing the token in context or another state management solution, retrieve it from there instead
-
-            await fetch('http://localhost:8000/api/v1/logout', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'api-key': currentToken, // Use the current token as the API key
-                },
-            });
-
-            // Assuming you have a context or state management solution to manage the accessToken
-            setAccessToken(''); // Clear the access token from context/global state
-            localStorage.removeItem('accessToken'); // Also clear the token from localStorage
+            await apiLogout(accessToken); // Assume this is your API call to invalidate the session on the server
+            setAccessToken(''); // Clear the access token in the context
+            setIsAuthenticated(false); // Update isAuthenticated state
             toast.success('Logout successful!');
-            await router.push('/'); // Redirect to the homepage or login page
+            router.push('/'); // Redirect to the homepage or login page
         } catch (error) {
             console.error('Logout error:', error);
             toast.error('An error occurred during logout.');
         }
     };
-
 
     return (
         <ConfirmModal

@@ -1,47 +1,64 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
-import { getProfile } from "@/api/endpoints";
+import Cookies from 'js-cookie';
+import { getProfile, logout as apiLogout } from "@/api/endpoints";
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-    const [accessToken, setAccessToken] = useState('');
-    const [userProfile, setUserProfile] = useState(null);
+    const [accessToken, setAccessToken] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Access localStorage after the component mounts
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            setAccessToken(token);
-        }
+        const checkForExistingSession = async () => {
+            if (typeof window !== "undefined") {
+                const storedToken = Cookies.get('accessToken');
+                if (storedToken) {
+                    try {
+                        await getProfile(storedToken);
+                        setIsAuthenticated(true);
+                        setAccessToken(storedToken);
+                    } catch (error) {
+                        setIsAuthenticated(false);
+                        Cookies.remove('accessToken');
+                    }
+                }
+            }
+            setIsLoading(false);
+        };
+
+        checkForExistingSession();
     }, []);
 
-    const { isLoading, isError } = useQuery(
-        ['validateToken', accessToken],
-        () => getProfile(accessToken),
-        {
-            enabled: !!accessToken,
-            onSuccess: (data) => {
-                setUserProfile(data); // Set the user profile upon successful fetch
-            },
-            onError: () => {
-                localStorage.removeItem('accessToken');
-                setAccessToken('');
-                setUserProfile(null); // Reset user profile on error
-            },
-            retry: false,
-            refetchOnWindowFocus: false,
+    const logout = async () => {
+        if (accessToken) {
+            try {
+                await apiLogout(accessToken);
+            } catch (error) {
+                console.error('Error during logout:', error);
+            }
         }
-    );
+        setIsAuthenticated(false);
+        setAccessToken(null);
+        if (typeof window !== 'undefined') {
+            Cookies.remove('accessToken');
+        }
+        setIsLoading(false);
+    };
 
-    const isAuthenticated = !!accessToken && !isError && !!userProfile;
+    const value = {
+        accessToken,
+        setAccessToken: (token) => {
+            Cookies.set('accessToken', token, { expires: 7, secure: true, sameSite: 'strict' }); // Adjust options as needed
+            setAccessToken(token);
+        },
+        isAuthenticated,
+        setIsAuthenticated,
+        isLoading,
+        logout,
+    };
 
-    // Now, we also pass userProfile and setUserProfile to the context value
-    return (
-        <AuthContext.Provider value={{ accessToken, setAccessToken, isLoading, isAuthenticated, userProfile, setUserProfile }}>
-            {children}
-        </AuthContext.Provider>
-    );
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

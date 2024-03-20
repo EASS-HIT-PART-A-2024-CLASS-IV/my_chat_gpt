@@ -1,45 +1,22 @@
+// useAuthenticatedRoute.js
 import React from 'react';
-import {useRouter} from 'next/router';
-import {useAuth} from './auth-context';
+import { useRouter } from 'next/router';
 import Loading from "@/components/loading";
+import {useAuth} from "@/hooks/auth-context"; // Adjust the import path as necessary
 
-const useAuthenticatedRoute = (WrappedComponent, redirectUrl = '/') => {
+const useAuthenticatedRoute = (WrappedComponent, redirectUrl = '/login') => {
     return function ProtectedRoute(props) {
-        const {accessToken: contextAccessToken, isLoading, setAccessToken} = useAuth();
-        const [isLocalLoading, setIsLocalLoading] = React.useState(true); // State to handle local loading
+        const { isAuthenticated, isLoading } = useAuth();
         const router = useRouter();
 
-        // Function to check and retrieve the access token from localStorage
-        const checkLocalStorageForToken = () => {
-            const storedToken = localStorage.getItem('accessToken');
-            if (storedToken) {
-                setAccessToken(storedToken); // Update context or state with the retrieved token
-            }
-            setIsLocalLoading(false); // Update local loading state
-        };
-
         React.useEffect(() => {
-            // On component mount, check localStorage for an access token
-            checkLocalStorageForToken();
-        }, []);
-
-        React.useEffect(() => {
-            // Whenever the accessToken changes and is not null, store it in localStorage
-            if (contextAccessToken) {
-                localStorage.setItem('accessToken', contextAccessToken);
-            }
-        }, [contextAccessToken]);
-
-        React.useEffect(() => {
-            // Redirect logic considering the isLoading states and the presence of an access token
-            if (!isLocalLoading && !isLoading && !contextAccessToken) {
-                // If both loading states are complete and there's no access token, redirect
+            if (!isLoading && !isAuthenticated) {
                 router.push(redirectUrl);
             }
-        }, [contextAccessToken, isLoading, isLocalLoading, router, redirectUrl]);
+        }, [isAuthenticated, isLoading, router, redirectUrl]);
 
-        if (isLoading || isLocalLoading) {
-            return <Loading/>;
+        if (isLoading) {
+            return <Loading />;
         }
 
         return <WrappedComponent {...props} />;

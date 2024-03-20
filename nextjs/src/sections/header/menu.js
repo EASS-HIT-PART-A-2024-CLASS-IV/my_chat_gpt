@@ -19,8 +19,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {useRouter} from "next/router";
 import {useAuth} from "@/hooks/auth-context";
 import LogoutButton from "@/sections/auth/logout";
+import Image from 'next/image';
 
-export default function Menu({title, navItems}) {
+
+export default function Menu({logo, title, navItems}) {
     const {isAuthenticated} = useAuth();
     const router = useRouter();
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -55,7 +57,14 @@ export default function Menu({title, navItems}) {
             <CssBaseline/>
             <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
                 <Toolbar>
-                    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                    <Image
+                        sx={{m: 2}}
+                        src={logo}
+                        alt={title}
+                        width={48}
+                        height={48}
+                      />
+                    <Typography variant="h6" component="div" sx={{flexGrow: 1, m: 2}}>
                         {title}
                     </Typography>
                     {isMobile ? (

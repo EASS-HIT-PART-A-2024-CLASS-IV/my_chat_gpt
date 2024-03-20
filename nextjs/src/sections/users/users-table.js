@@ -172,4 +172,4 @@ function UserTable() {
     );
 }
 
-export default useAuthenticatedRoute(UserTable);
+export default UserTable;
