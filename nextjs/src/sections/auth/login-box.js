@@ -1,28 +1,32 @@
-import React, { useState } from 'react';
-import { Box, Button, Container, TextField, Typography } from '@mui/material';
-import { useAuth } from "@/hooks/auth-context"; // Ensure this is the correct path
+import React, {useState} from 'react';
+import {Box, Button, Container, TextField, Typography} from '@mui/material';
+import {useAuth} from "@/hooks/auth-context";
 import toast from "react-hot-toast";
-import { useRouter } from "next/router";
-import { getToken } from "@/api/endpoints"; // Ensure this is the correct path
+import {useRouter} from "next/router";
+import {getToken} from "@/api/endpoints";
+import ForgotPasswordModal from "@/sections/auth/forgot-password";
+import RegistrationModal from "@/sections/auth/registration";
 
 export default function LoginBox() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const { setAccessToken, setIsAuthenticated } = useAuth(); // Update based on the revised context
+    const {setAccessToken, setIsAuthenticated} = useAuth();
     const router = useRouter();
+
+    // State for managing modal visibility
+    const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+    const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
 
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
             const data = await getToken(username, password);
-            // noinspection JSUnresolvedReference
             if (data.access_token) {
-                setAccessToken(data.access_token); // Update accessToken in context
-                setIsAuthenticated(true); // Update isAuthenticated state
+                setAccessToken(data.access_token);
+                setIsAuthenticated(true);
                 toast.success('Login successful!');
-                await router.push('/dashboard'); // Redirect to the dashboard or another path as needed
+                await router.push('/dashboard');
             } else {
-                // Handle cases where login is successful but no token is returned
                 toast.error('Login succeeded, but no access token was returned.');
             }
         } catch (error) {
@@ -32,10 +36,10 @@ export default function LoginBox() {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container component="main" maxWidth="sm">
             <Box
                 sx={{
-                    marginTop: 8,
+                    marginTop: 4,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -85,8 +89,26 @@ export default function LoginBox() {
                     >
                         Sign In
                     </Button>
+                    <Button
+                        sx={{mt: 1}}
+                        color="secondary"
+                        fullWidth
+                        onClick={() => setIsForgotPasswordOpen(true)}
+                    >
+                        Forgot Password?
+                    </Button>
+                    <Button
+                        sx={{mt: 1}}
+                        color="secondary"
+                        fullWidth
+                        onClick={() => setIsRegistrationOpen(true)}
+                    >
+                        Don't have an account? Register
+                    </Button>
                 </Box>
             </Box>
+            <ForgotPasswordModal open={isForgotPasswordOpen} handleClose={() => setIsForgotPasswordOpen(false)}/>
+            <RegistrationModal open={isRegistrationOpen} handleClose={() => setIsRegistrationOpen(false)}/>
         </Container>
     );
 }
