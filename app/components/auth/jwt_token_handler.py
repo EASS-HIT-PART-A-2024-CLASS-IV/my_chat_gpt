@@ -34,7 +34,7 @@ async def create_jwt_access_token(request: Request, data: dict, expires_delta: t
     user_key = f"USER_{user_id}_API_KEY"
 
     # Check if this user already has a token
-    existing_api_key = redis_client.get(user_key)
+    existing_api_key = await redis_client.get(user_key)
     if existing_api_key:
         # Delete the old token to invalidate it
         await redis_client.delete(f"API_KEY_{existing_api_key}")

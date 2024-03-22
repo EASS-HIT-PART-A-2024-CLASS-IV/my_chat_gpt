@@ -1,6 +1,7 @@
 import secrets
 from datetime import timedelta
 
+from bson import ObjectId
 from fastapi import status, Request, HTTPException, APIRouter
 
 from app.classes.User import User, Role, UserRegistration
@@ -65,23 +66,43 @@ async def create_user(user_registration: UserRegistration):
 
 @router.post("/users/forgot-password/")
 async def forgot_password(email: str, request: Request):
+    """
+       Initiates the password reset process for a user identified by their email.
+
+       This endpoint will:
+       - Verify if a user with the provided email exists in the database.
+       - Generate a secure, random token to be used as a password reset token.
+       - Store this token in Redis with an expiration time, linking it to the user's ID.
+       - Email the user with a link containing the password reset token.
+
+       Args:
+       - email (str): The email address of the user requesting a password reset.
+       - request (Request): The request object, used to access app state like the Redis client.
+
+       Returns:
+       - A message indicating that a password reset link has been sent if a user with the provided email exists.
+    """
+
+    # Look for the user in the database using the provided email address.
     user = await user_collection.find_one({"email": email})
     redis_client = request.app.state.redis
+
+    # If no user is found with the provided email, return a 404 error.
     if not user:
         raise HTTPException(status_code=404, detail="User with this email does not exist.")
 
     # Generate a secure, random token for the password reset
-    reset_token = secrets.token_urlsafe(32)
+    reset_token = secrets.token_urlsafe(64)
     # reset_token_expires = int((datetime.utcnow() + timedelta(hours=1)).timestamp())
 
     # Use Redis to store the token with an expiration time
     await redis_client.setex(f"reset_token:{reset_token}", timedelta(hours=1), value=str(user["_id"]))
 
     # Email the user with the reset token
-    reset_link = f"https://yourfrontend.com/reset-password?token={reset_token}"
+    reset_link = f"http://localhost:3000/reset-password/{reset_token}"
     await send_email_and_save(
         subject="Password Reset Request",
-        body=f"Please click on the link to reset your password: {reset_link}",
+        body=f"Please click on the link to reset your password: {reset_link}, the URL is valid for one hour.",
         to_emails=[email],
         files=[]
     )
@@ -90,21 +111,42 @@ async def forgot_password(email: str, request: Request):
 
 @router.post("/users/reset-password/")
 async def reset_password(token: str, new_password: str, request: Request):
+    """Reset user password given a valid token and new password.
+
+    This endpoint retrieves the user ID associated with the provided token from Redis,
+    verifies that the token is valid (i.e., has not expired and exists), hashes the new password,
+    updates the user's password in the database, and then optionally deletes the token from Redis.
+    """
+
+    # Access the Redis client from the application state
     redis_client = request.app.state.redis
-    user_id = await redis_client.get(f"reset_token:{token}")
-    if not user_id:
+
+    # Attempt to retrieve the user_id associated with the provided token
+    user_id_str = await redis_client.get(f"reset_token:{token}")
+    if not user_id_str:
+        # If no user_id is found, the token is invalid or expired
         raise HTTPException(status_code=400, detail="Invalid or expired password reset token.")
 
-    # Hash the new password
+    # Convert the user_id string to ObjectId for MongoDB.
+    # No need to decode since it's already a string.
+    user_id = ObjectId(user_id_str)
+
+    # Hash the new password before storing it
     hashed_password = hash_password(new_password)
 
-    # Update the user's password
-    await user_collection.update_one(
+    # Update the user's password in the database
+    result = await user_collection.update_one(
         {"_id": user_id},
         {"$set": {"hashed_password": hashed_password}}
     )
 
-    # Optionally, delete the token from Redis after use
+    # Check if the password was actually updated
+    if result.modified_count == 0:
+        # This means the user ID did not match any document in the database
+        raise HTTPException(status_code=500, detail="Failed to reset the password.")
+
+    # Optionally, delete the token from Redis after successful password reset
     await redis_client.delete(f"reset_token:{token}")
 
+    # Return a success message
     return {"message": "Password has been reset successfully."}

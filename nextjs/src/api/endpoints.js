@@ -85,3 +85,14 @@ export const fetchChatResponse = async (question, accessToken, model) => {
     }
     return response.json();
 };
+
+
+export const forgotPassword = async (email) => {
+    await axios.post(`${API_BASE_URL}/users/forgot-password/`, {}, {
+        params: { email },
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer bringthemhome',
+        },
+    });
+};

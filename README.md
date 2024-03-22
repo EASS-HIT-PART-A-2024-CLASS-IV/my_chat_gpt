@@ -83,6 +83,8 @@ _Why python? In just a few days, I was able to develop an advanced system; imagi
   admin_username=admin
   admin_password=bringthemhome
   admin_email=israel@israeli.com
+  
+  # Initial email settings located in app/components/initial settings.py
   ```
 
 

@@ -47,20 +47,31 @@ async def login_for_access_token(request: Request, form_data: SimpleAuthForm = D
     on subsequent requests.
     """
     try:
+        # Authenticate the user
         user: dict | Any = await authenticate_user(form_data.username, form_data.password)
         if not user:
             logger.warning(f"Login attempt failed for user: {form_data.username}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
-                headers={"WWW-Authenticate": "Bearer"},
             )
+
+        # Specify token expiration duration
         access_token_expires = timedelta(minutes=30)  # Token validity can be adjusted
+
+        # Create JWT access token
         access_token = await create_jwt_access_token(
-            request=request, data={"sub": user["username"]}, expires_delta=access_token_expires
+            request=request,
+            data={"sub": user["username"]},  # 'sub' claim to include the username
+            expires_delta=access_token_expires
         )
+
         logger.info(f"Login successful for user: {form_data.username}")
         return {"access_token": access_token, "token_type": "bearer"}
+
+    except HTTPException:  # Catch and re-raise HTTPException to ensure it stops execution
+        raise
+
     except Exception as e:
         logger.error(f"An error occurred during login attempt: {str(e)}")
         raise HTTPException(

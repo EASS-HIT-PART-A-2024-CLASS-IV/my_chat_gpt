@@ -30,8 +30,24 @@ export default function LoginBox() {
                 toast.error('Login succeeded, but no access token was returned.');
             }
         } catch (error) {
-            console.error('Login error:', error);
-            toast.error('An error occurred during login.');
+            if (error.response) {
+                if (error.response.status === 401) {
+                    // Handle incorrect credentials
+                    toast.error(error.response.data.detail || 'Incorrect username or password.');
+                } else if (error.response.status === 503) {
+                    // Handle server down scenario
+                    toast.error('Service temporarily unavailable. Please try again later.');
+                } else {
+                    // Handle other errors
+                    toast.error(`An error occurred: ${error.response.status}`);
+                }
+            } else if (error.request) {
+                // The request was made but no response was received
+                toast.error('The server is not responding. Please check your internet connection or try again later.');
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                toast.error('An error occurred during login. Please try again.');
+            }
         }
     };
 

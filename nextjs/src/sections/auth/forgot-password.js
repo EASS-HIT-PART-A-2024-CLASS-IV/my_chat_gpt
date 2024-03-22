@@ -13,15 +13,20 @@ import CloseIcon from '@mui/icons-material/Close';
 import EmailIcon from '@mui/icons-material/Email';
 import InputAdornment from '@mui/material/InputAdornment';
 import toast from "react-hot-toast";
+import {forgotPassword} from "@/api/endpoints";
 
 export default function ForgotPasswordModal({open, handleClose}) {
     const [email, setEmail] = useState('');
 
     const handleSubmit = async () => {
-        // Implement your password reset logic here
-        toast.success("Please check your email.")
-        console.log(email);
-        handleClose();
+        try {
+            await forgotPassword(email);
+            toast.success("Please check your email for further instructions.");
+            handleClose();
+        } catch (error) {
+            console.error(error);
+            toast.error("An error occurred. Please try again.");
+        }
     };
 
     return (

@@ -26,9 +26,10 @@ async def check_key_not_expired(redis_client, key):
 
 async def create_owner():
     owner_email = os.getenv("owner_email")
+    owner_username = os.getenv("owner_username")
     user_collection = async_database.users  # Get the collection from the database
 
-    if await user_collection.find_one({"email": owner_email}):
+    if await user_collection.find_one({"$or": [{"email": owner_email}, {"username": owner_username}]}):
         logger.info("Owner already exists, skipping creation.")
         return
 
