@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Depends, status, Header
+from fastapi import APIRouter, HTTPException, Depends, status, Header, Request
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 
@@ -9,13 +9,10 @@ from app.classes.Auth import SimpleAuthForm
 from app.components.auth.jwt_token_handler import create_jwt_access_token
 from app.components.logger import logger
 from app.db.mongoClient import async_database
-from app.db.redisClient import RedisClient
 
 router = APIRouter()
 
 user_collection = async_database.users  # Get the collection from the database
-redisClient = RedisClient.get_instance()
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")  # setup password hashing context
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")  # Dependency
 
@@ -36,11 +33,18 @@ async def authenticate_user(username: str, password: str):
 
 
 @router.post("/token")
-async def login_for_access_token(form_data: SimpleAuthForm = Depends()):
+async def login_for_access_token(request: Request, form_data: SimpleAuthForm = Depends()):
     """
-    Log-in and generate access token
-    :param form_data:
-    :return:
+    Log-in and generate access token.
+
+    :param request: The request object, providing access to HTTP request properties.
+    :param form_data: The form data from the login request, containing the username and password.
+    :return: A JSON object containing the access token and token type.
+
+    This endpoint verifies the user's credentials. If valid, it generates a JWT access token that the user
+    can use for authenticated requests. The token includes a 'sub' claim containing the username, and it
+    has a default expiration time. This token is also stored in Redis with an expiration time for validation
+    on subsequent requests.
     """
     try:
         user: dict | Any = await authenticate_user(form_data.username, form_data.password)
@@ -52,8 +56,8 @@ async def login_for_access_token(form_data: SimpleAuthForm = Depends()):
                 headers={"WWW-Authenticate": "Bearer"},
             )
         access_token_expires = timedelta(minutes=30)  # Token validity can be adjusted
-        access_token = create_jwt_access_token(
-            data={"sub": user["username"]}, expires_delta=access_token_expires
+        access_token = await create_jwt_access_token(
+            request=request, data={"sub": user["username"]}, expires_delta=access_token_expires
         )
         logger.info(f"Login successful for user: {form_data.username}")
         return {"access_token": access_token, "token_type": "bearer"}
@@ -66,18 +70,22 @@ async def login_for_access_token(form_data: SimpleAuthForm = Depends()):
 
 
 @router.post("/logout")
-async def logout(api_key: str = Header(...)):
+async def logout(request: Request, api_key: str = Header(...)):
     """
     Invalidate the user's current JWT token to log them out.
     """
     try:
         token_key = f"API_KEY_{api_key}"
-        token_exists = redisClient.exists(token_key)
+        # Use the async get_instance method to get the Redis client
+        redis_client = request.app.state.redis
+
+        # Async call to check if the token exists
+        token_exists = await redis_client.exists(token_key)
         if not token_exists:
             raise HTTPException(status_code=404, detail="Token not found or already invalidated")
 
-        # Invalidate the token by deleting it from Redis
-        redisClient.delete(token_key)
+        # Invalidate the token by deleting it from Redis asynchronously
+        await redis_client.delete(token_key)
         return {"message": "Logged out successfully."}
     except Exception as e:
         raise HTTPException(

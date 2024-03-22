@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, EmailStr
 
 # Define roles
 class Role(str, Enum):
+    owner = "owner"
     admin = "admin"
     user = "user"
 
@@ -49,3 +50,20 @@ class User(UserBase):
         }
         from_attributes = True  # Enable ORM mode for compatibility with databases
         populate_by_name = True  # Allows field population by name, useful for fields with aliases
+
+
+class UserRegistration(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: str
+    password: str
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "username": "newuser",
+                "email": "newuser@example.com",
+                "full_name": "New User",
+                "password": "securepassword123",
+            }
+        }

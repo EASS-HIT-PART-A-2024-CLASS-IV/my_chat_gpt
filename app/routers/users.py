@@ -1,7 +1,7 @@
 from typing import List
 
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from starlette import status
 
 from app.classes.User import UserCreate, User, UpdateUser
@@ -12,9 +12,18 @@ from app.components.logger import logger
 from app.db.mongoClient import async_database
 
 router = APIRouter()  # router instance
-
 user_collection = async_database.users  # Get the collection from the database
 
+
+async def user_exists(email: str = None, username: str = None) -> bool:
+    query = {}
+    if email:
+        query["email"] = email
+    if username:
+        query["username"] = username
+    if query:
+        return await user_collection.find_one({"$or": [query]}) is not None
+    return False
 
 @router.get("/users/", response_model=List[User], dependencies=[Depends(check_permissions)])
 async def get_users(username: str = Depends(get_jwt_username)):
@@ -48,7 +57,7 @@ async def get_profile(current_username: str = Depends(get_jwt_username)):
 
 
 @router.get("/users/{id}", response_model=User, dependencies=[Depends(check_permissions)])
-async def get_user(id: str, username: str = Depends(get_jwt_username)):
+async def get_user(id: str, username: str = Depends(get_jwt_username)):  # noqa
     try:
         user = await user_collection.find_one({"_id": ObjectId(id)})
         if not user:
@@ -62,24 +71,40 @@ async def get_user(id: str, username: str = Depends(get_jwt_username)):
         raise HTTPException(status_code=500, detail="An error occurred while fetching the user.")
 
 
+@router.get("/check_user_exists", response_model=bool)
+async def check_user_exists(email: str = Query(None), username: str = Query(None)):
+    # Validate input
+    if not email and not username:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Either an email or a username must be provided."
+        )
+
+    # Use the utility function to check if the user exists
+    exists = await user_exists(email=email, username=username)
+
+    return exists
+
+
 @router.post("/users/", response_model=User, dependencies=[Depends(check_permissions)])
 async def create_user(user: UserCreate, username: str = Depends(get_jwt_username)):
     try:
-        if await user_collection.find_one({"email": user.email}) or await user_collection.find_one(
-                {"username": user.username}):
-            detail_msg = "The email is already in use." if await user_collection.find_one(
-                {"email": user.email}) else "The username is already in use."
-            logger.warning(f"Attempt to use an existing email or username by {username}")
+        # Check if the email or username already exists
+        if await user_exists(email=user.email, username=user.username):
+            detail_msg = "The email or username is already in use."
+            logger.warning(f"Attempt to create a user with an existing email or username by {username}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=detail_msg
             )
 
+        # Hash the user's password for storage
         hashed_password = hash_password(user.password)
         user_dict = user.dict()
         user_dict["hashed_password"] = hashed_password
         del user_dict["password"]
 
+        # Insert the new user into the database
         new_user = await user_collection.insert_one(user_dict)
         created_user = await user_collection.find_one({"_id": new_user.inserted_id})
         created_user['_id'] = str(created_user['_id'])
@@ -91,9 +116,8 @@ async def create_user(user: UserCreate, username: str = Depends(get_jwt_username
         logger.error(f"Error creating user by {username}: {str(e)}")
         raise HTTPException(status_code=500, detail="An error occurred while creating the user.")
 
-
 @router.put("/users/{id}", dependencies=[Depends(check_permissions)])
-async def update_user(id: str, update_data: UpdateUser, username: str = Depends(get_jwt_username)):
+async def update_user(id: str, update_data: UpdateUser, username: str = Depends(get_jwt_username)):  # noqa
     try:
         update_data_dict = update_data.dict(exclude_unset=True)
         if "password" in update_data_dict:
@@ -119,16 +143,40 @@ async def update_user(id: str, update_data: UpdateUser, username: str = Depends(
 
 
 @router.delete("/users/{id}", dependencies=[Depends(check_permissions)])
-async def delete_user(id: str, username: str = Depends(get_jwt_username)):
+async def delete_user(id: str, username: str = Depends(get_jwt_username)):  # noqa
+    """
+        Delete user by ID, the site owner cannot be deleted.
+    """
     try:
+        # Retrieve user data from MongoDB based on the provided ID
+        user_data = await user_collection.find_one({"_id": ObjectId(id)})
+
+        # Check if user data is found
+        if not user_data:
+            logger.warning(f"Attempt to delete non-existing user with ID {id} by {username}")
+            raise HTTPException(status_code=404, detail=f"User with ID {id} not found")
+
+        # Assuming user data includes a field for the user's role, such as 'role'
+        user_role = user_data.get('role', None)
+
+        # Check if the user is an owner (or has the permission to delete)
+        if user_role == "owner":
+            logger.warning(f"Attempt to delete user with ID {id} who is an owner by {username}")
+            raise HTTPException(status_code=403, detail="Owners are not allowed to be deleted.")
+
+        # Proceed with user deletion if the user is not an owner
         delete_result = await user_collection.delete_one({"_id": ObjectId(id)})
 
         if delete_result.deleted_count == 0:
             logger.warning(f"Attempt to delete non-existing user with ID {id} by {username}")
-            raise HTTPException(status_code=404, detail="User with ID {id} not found")
+            raise HTTPException(status_code=404, detail=f"User with ID {id} not found")
 
         logger.info(f"User {username} deleted user {id} successfully.")
-        return {"message": "User deleted successfully."}  # Now it will return a 200 status code with this message
+        return {"message": "User deleted successfully."}
+
+    except HTTPException:
+        raise  # Re-raise HTTPException to let FastAPI handle it
+
     except Exception as e:
         logger.error(f"Error deleting user by {username}: {str(e)}")
         raise HTTPException(status_code=500, detail="An error occurred while deleting the user.")

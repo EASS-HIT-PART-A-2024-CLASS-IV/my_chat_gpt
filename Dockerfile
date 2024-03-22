@@ -22,5 +22,13 @@ COPY .. /app
 ## Command to run the application
 #CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
+# Copy the entrypoint script into the container
+COPY entrypoint.sh /usr/local/bin/
+
+# Make sure the script is executable
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
 ## Run the container with multiple workers instead if needed.
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]

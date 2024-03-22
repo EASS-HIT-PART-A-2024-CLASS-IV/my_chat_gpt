@@ -3,12 +3,8 @@ import secrets
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
-from fastapi import HTTPException, Depends, security, status
+from fastapi import HTTPException, Depends, security, status, Request
 from fastapi.security import HTTPBasicCredentials, HTTPBasic
-
-from app.db.redisClient import RedisClient
-
-redisClient = RedisClient.get_instance()
 
 # Load environment variables from .env file
 load_dotenv()
@@ -19,7 +15,7 @@ http_bearer = security.HTTPBearer()
 security_basic = HTTPBasic()
 
 
-def get_secret_key(security_payload: security.HTTPAuthorizationCredentials = Depends(http_bearer)):
+async def get_secret_key(security_payload: security.HTTPAuthorizationCredentials = Depends(http_bearer)):
     """
     This function is used to get the secret key from the authorization header.
     :param security_payload:
@@ -31,64 +27,48 @@ def get_secret_key(security_payload: security.HTTPAuthorizationCredentials = Dep
     return authorization
 
 
-def get_login_attempts(username: str):
-    """
-    This function is used to get the number of failed login attempts.
-    :param username:
-    :return:
-    """
-    attempts = redisClient.get(f"{username}:attempts")
-    if attempts:
-        return int(attempts)
-    return 0
+async def get_login_attempts(username: str, request: Request):
+    redis_client = request.app.state.redis
+    attempts = await redis_client.get(f"{username}:attempts")
+    return int(attempts) if attempts else 0
 
 
-def get_last_attempt_time(username: str):
+async def get_last_attempt_time(username: str, request: Request):
     """
     This function is used to get the last login attempt time.
-    :param username:
-    :return:
     """
-    last_time = redisClient.get(f"{username}:last_attempt")
+    redis_client = request.app.state.redis
+
+    last_time = await redis_client.get(f"{username}:last_attempt")  # This should be awaited
     if last_time:
         return datetime.fromtimestamp(float(last_time))
     return None
 
 
-def set_failed_login(username: str, attempts: int, last_attempt_time: datetime):
+async def set_failed_login(username: str, attempts: int, last_attempt_time: datetime, request: Request):
     """
     This function is used to set the number of failed login attempts and the last login attempt time.
-    :param username:
-    :param attempts:
-    :param last_attempt_time:
-    :return:
     """
-    redisClient.set(f"{username}:attempts", attempts, ex=300)  # 5 minutes expiration
-    redisClient.set(f"{username}:last_attempt", last_attempt_time.timestamp(), ex=300)  # 5 minutes expiration
+    redis_client = request.app.state.redis
+
+    await redis_client.set(f"{username}:attempts", attempts, ex=300)  # 5 minutes expiration
+    await redis_client.set(f"{username}:last_attempt", last_attempt_time.timestamp(), ex=300)  # 5 minutes expiration
 
 
-def reset_login_attempts(username: str):
+async def reset_login_attempts(username: str, request: Request):
     """
     This function is used to reset the number of failed login attempts and the last login attempt time.
-    :param username:
-    :return:
     """
-    redisClient.delete(f"{username}:attempts", f"{username}:last_attempt")
+    redis_client = request.app.state.redis
+    await redis_client.delete(f"{username}:attempts", f"{username}:last_attempt")
 
 
-def verify_credentials(credentials: HTTPBasicCredentials = Depends(security_basic)):
-    """
-    This function is used to verify the credentials.
-    :param credentials:
-    :return:
-    """
+async def verify_credentials(request: Request, credentials: HTTPBasicCredentials = Depends(security_basic)):
     username = credentials.username
     current_time = datetime.now()
 
-    # Check if the username is currently blocked
-    attempts = get_login_attempts(username)
-    last_attempt_time = get_last_attempt_time(username)
-
+    attempts = await get_login_attempts(username, request)
+    last_attempt_time = await get_last_attempt_time(username, request)
     if attempts >= 5 and last_attempt_time and (current_time - last_attempt_time) < timedelta(minutes=5):
         raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                             detail="Too many login attempts. Please try again later.")
@@ -97,10 +77,9 @@ def verify_credentials(credentials: HTTPBasicCredentials = Depends(security_basi
     correct_password = secrets.compare_digest(credentials.password, os.environ["fastapi_ui_password"])
 
     if not (correct_username and correct_password):
-        set_failed_login(username, attempts + 1, current_time)
-        raise HTTPException(status_code=401, detail="Incorrect username or password")
+        await set_failed_login(username, attempts + 1, current_time, request)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
 
-    # Reset the count on successful login
-    reset_login_attempts(username)
+    await reset_login_attempts(username, request)
 
     return credentials

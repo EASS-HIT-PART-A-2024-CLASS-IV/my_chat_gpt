@@ -1,4 +1,6 @@
+import asyncio
 import logging
+from typing import Any
 
 import uvicorn
 from fastapi import FastAPI, Depends
@@ -6,14 +8,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBasicCredentials
 from starlette.config import Config
 
-from app.components.auth.fastapi_auth import verify_credentials  # , get_secret_key
+from app.components.auth.fastapi_auth import verify_credentials, get_secret_key  # , get_secret_key
 from app.components.auth.jwt_token_handler import get_jwt_secret_key
-from app.components.initial_users import create_initial_users
+from app.components.initial_users import create_owner
+# local
 from app.db.mongoClient import async_client
-from app.routers import auth, users, chatgpt
+from app.db.redisClient import AsyncRedisClient
+# routers
+from app.routers import auth, users, chatgpt, register
+
+
+class State:
+    redis: Any = None  # Use a more specific type if possible
+
+
+class CustomFastAPI(FastAPI):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.state: State = State()
+
 
 # loading the FastAPI app
-app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+
+
+app = CustomFastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 # Read the configuration
 config = Config(".env")
@@ -40,9 +58,8 @@ prefix_path = '/api/v1'
 app.include_router(auth.router, prefix=prefix_path, tags=["auth"])
 app.include_router(users.router, prefix=prefix_path, dependencies=[Depends(get_jwt_secret_key)], tags=["users"])
 app.include_router(chatgpt.router, prefix=prefix_path, dependencies=[Depends(get_jwt_secret_key)], tags=["chatgpt"])
-
-
-# app.include_router(model35.router, prefix=prefix_path, dependencies=[Depends(get_secret_key)], tags=["users"]) # example of static dependency, static secret_key from .env
+app.include_router(register.router, prefix=prefix_path, dependencies=[Depends(get_secret_key)],
+                   tags=["public"])  # example of static dependency, static secret_key from .env
 
 
 @app.get("/openapi.json", include_in_schema=False)
@@ -86,25 +103,33 @@ async def custom_redoc_url(credentials: HTTPBasicCredentials = Depends(verify_cr
     from fastapi.openapi.docs import get_redoc_html
     return get_redoc_html(openapi_url="/openapi.json", title=app.title)  # noqa
 
-
 @app.on_event("startup")
-async def startup():
+async def startup_event():
     """
-    On startup create initial users
+       On startup create initial users & start redis async redis server
     """
+
+    app.state.redis = await AsyncRedisClient.get_instance()
+
     try:
-        await create_initial_users()
+        await create_owner()
     except Exception as e:  # noqa
         pass
 
 
 @app.on_event("shutdown")
-async def shutdown():
-    """
-    On Shutdown close the MongoDB connection
-    """
-    logging.info("Shutdown the application and close the MongoDB connection")
-    async_client.close()
+async def shutdown_event():
+    logging.info("Shutdown the application and close the MongoDB, Redis connections")
+
+    # Ensure Redis client is closed properly if it's async
+    if app.state.redis and hasattr(app.state.redis, "close"):
+        await app.state.redis.close()  # This presumes close is an async method
+
+    # Close the MongoDB client if it's initialized and the close method is awaitable
+    if async_client and hasattr(async_client, "close"):
+        close_method = async_client.close()
+        if asyncio.iscoroutinefunction(async_client.close) or asyncio.iscoroutine(close_method):
+            await close_method
 
 
 if __name__ == "__main__":

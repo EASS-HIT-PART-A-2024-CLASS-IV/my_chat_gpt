@@ -141,7 +141,7 @@ Visit https://nodejs.org/ to download and install the latest version.
   Username: admin
   Password: bringthemhome
   ```
-* Access the API documentation at http://localhost:8000/docs. You can obtain a token by entering your username and password from the link provided above. 
+* Access the API documentation at http://localhost:8000/docs. You can obtain a token by entering your username and password from the text box above. 
 * Please note that the Swagger UI is also password-protected, and it will temporarily block access if the password is entered incorrectly more than five times, for a duration of five minutes.
   ```swagger codegen
   Username: bringthemhome
