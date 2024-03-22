@@ -1,8 +1,12 @@
-from fastapi import APIRouter, HTTPException, status
+import secrets
+from datetime import timedelta
+
+from fastapi import status, Request, HTTPException, APIRouter
 
 from app.classes.User import User, Role, UserRegistration
 from app.components.hash_password import hash_password
 from app.components.logger import logger
+from app.components.message_dispatcher.mail import send_email_and_save
 from app.db.mongoClient import async_database
 from app.routers.users import user_exists
 
@@ -57,3 +61,50 @@ async def create_user(user_registration: UserRegistration):
         logger.error(f"Error registering new user {user_registration.username}: {str(e)}")
         # Raise a 500 status code HTTP exception if an unexpected error occurs during registration.
         raise HTTPException(status_code=500, detail="An error occurred while creating the user.")
+
+
+@router.post("/users/forgot-password/")
+async def forgot_password(email: str, request: Request):
+    user = await user_collection.find_one({"email": email})
+    redis_client = request.app.state.redis
+    if not user:
+        raise HTTPException(status_code=404, detail="User with this email does not exist.")
+
+    # Generate a secure, random token for the password reset
+    reset_token = secrets.token_urlsafe(32)
+    # reset_token_expires = int((datetime.utcnow() + timedelta(hours=1)).timestamp())
+
+    # Use Redis to store the token with an expiration time
+    await redis_client.setex(f"reset_token:{reset_token}", timedelta(hours=1), value=str(user["_id"]))
+
+    # Email the user with the reset token
+    reset_link = f"https://yourfrontend.com/reset-password?token={reset_token}"
+    await send_email_and_save(
+        subject="Password Reset Request",
+        body=f"Please click on the link to reset your password: {reset_link}",
+        to_emails=[email],
+        files=[]
+    )
+    return {"message": "If an account with this email was found, a password reset link has been sent."}
+
+
+@router.post("/users/reset-password/")
+async def reset_password(token: str, new_password: str, request: Request):
+    redis_client = request.app.state.redis
+    user_id = await redis_client.get(f"reset_token:{token}")
+    if not user_id:
+        raise HTTPException(status_code=400, detail="Invalid or expired password reset token.")
+
+    # Hash the new password
+    hashed_password = hash_password(new_password)
+
+    # Update the user's password
+    await user_collection.update_one(
+        {"_id": user_id},
+        {"$set": {"hashed_password": hashed_password}}
+    )
+
+    # Optionally, delete the token from Redis after use
+    await redis_client.delete(f"reset_token:{token}")
+
+    return {"message": "Password has been reset successfully."}

@@ -31,3 +31,22 @@ class AsyncRedisClient:
             except aioredis.ConnectionError as e:
                 logger.error(f"Could not connect to Redis server at {host}: {e}.")
         raise Exception("Could not connect to any Redis server.")
+
+# # An Redis Lock Example for Future Implementations When Running Multiple Workers
+# async def create_initial_users(redis_client):
+#     lock_key = "lock_users_creation"  # Unique key for locking
+#     expiry_seconds = 120  # Lock expiration time
+#
+#     try:
+#         lock_acquired = await redis_client.set(lock_key, "1", ex=expiry_seconds, nx=True)
+#         if lock_acquired:
+#             try:
+#                 await create_owner()
+#             except Exception as e:
+#                 logger.error(f"Error during schedule contact update: {e}")
+#             await asyncio.sleep(expiry_seconds)
+#         else:
+#             await asyncio.sleep(30)
+#     finally:
+#         await redis_client.close()
+#         await redis_client.connection_pool.disconnect()

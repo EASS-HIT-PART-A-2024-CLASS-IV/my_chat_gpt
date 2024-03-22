@@ -2,7 +2,9 @@
 
 ## Overview
 
-This Full-Stack User Management System combines a robust backend built with FastAPI for handling user operations such as registration, authentication, and profile management with a modern, responsive frontend designed using Next.js and Material-UI (MUI). The application ensures secure user authentication leveraging JSON Web Tokens (JWT), safeguarding sensitive information and actions. It's designed to offer a seamless, interactive user experience while maintaining high standards of security and performance.
+A full-stack system utilizing FastAPI with asynchronous capabilities on the backend and Next.js for the frontend showcases the robustness of Python in server-side development. This architecture provides a scalable, efficient solution that leverages FastAPI's high performance and ease of use for creating APIs, alongside Next.js for a reactive and server-side rendered user interface. The asynchronous nature of the backend ensures non-blocking operation, enhancing the system's ability to handle high volumes of requests simultaneously, which is ideal for real-time applications. This combination offers a modern, full-stack framework that is both powerful and developer-friendly, demonstrating the versatility of Python in web development.
+
+_Why python? In just a few days, I was able to develop an advanced system; imagine the vast expanse of innovation we could unlock with several months at our disposal. The only limit to what we can achieve lies in the breadth of our imagination. - George Khananaev_
 
 ## Key Features
 
@@ -160,4 +162,9 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 - Thanks to the FastAPI, MongoDB, Redis, and Docker communities for support and resources.
 
 ## Support Me
-If you find my work helpful, consider supporting me by buying me a coffee at [Buy Me A Coffee](https://www.buymeacoffee.com/georgekhananaev). Your support helps me continue to create and maintain useful projects. Thank you!
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/georgekhananaev)
+
+If you find my work helpful, consider supporting me by buying me a coffee at [Buy Me A Coffee](https://www.buymeacoffee.com/georgekhananaev). 
+
+Your support helps me continue to create and maintain useful projects. Thank you!

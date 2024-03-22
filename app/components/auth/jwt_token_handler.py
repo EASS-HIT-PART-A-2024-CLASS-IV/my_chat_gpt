@@ -27,8 +27,8 @@ async def create_jwt_access_token(request: Request, data: dict, expires_delta: t
 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-    # Token expiration in seconds (120 minutes)
-    token_expiration_seconds = 120 * 60
+    # Token expiration in seconds (2 days)
+    token_expiration_seconds = 48 * 60 * 60
 
     # Key for storing the mapping of user_id to their token
     user_key = f"USER_{user_id}_API_KEY"
