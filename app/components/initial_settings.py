@@ -25,24 +25,36 @@ async def check_key_not_expired(redis_client, key):
 
 
 async def create_owner():
+    # Fetch owner's email and username from environment variables
     owner_email = os.getenv("owner_email")
     owner_username = os.getenv("owner_username")
-    user_collection = async_database.users  # Get the collection from the database
 
-    if await user_collection.find_one({"$or": [{"email": owner_email}, {"username": owner_username}]}):
-        logger.info("Owner already exists, skipping creation.")
+    # Assuming async_database.users is your collection from an async database
+    user_collection = async_database.users
+
+    # Check if an owner with the same email already exists
+    if await user_collection.find_one({"email": owner_email}):
+        logger.info(f"An owner with email {owner_email} already exists, skipping creation.")
         return
 
+    # Check if an owner with the same username already exists
+    if await user_collection.find_one({"username": owner_username}):
+        logger.info(f"An owner with username {owner_username} already exists, skipping creation.")
+        return
+
+    # Define the admin user with details from environment variables
     admin_user = {
-        "username": os.getenv("owner_username"),
-        "email": os.getenv("owner_email"),
+        "username": owner_username,
+        "email": owner_email,
         "full_name": "Site Owner",
         "disabled": False,
-        "password": os.getenv("owner_password"),
+        "password": os.getenv("owner_password"),  # Assuming the password is also stored in env variables
         "role": "owner"
     }
-    # Directly call the logic to create a user
+
+    # Create the user with the specified admin user details
     await create_user(UserCreate(**admin_user), "system_init")
+    logger.info("Owner created successfully.")
 
 
 async def initialize_message_settings():
