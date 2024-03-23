@@ -81,8 +81,8 @@ _Why python? In just a few days, I was able to develop an advanced system; imagi
   open_ai_organization=org-your_openai_key
   open_ai_secret_key=sk-your_openai_key
   
-  # default admin user
-  owner_username=admin
+  # default root user
+  owner_username=root
   owner_password=bringthemhome
   owner_email=israel@israeli.com
   
@@ -144,7 +144,7 @@ Visit https://nodejs.org/ to download and install the latest version.
 
 - Frontend: [http://localhost:3000](http://localhost:3000)
   ```swagger codegen
-  Username: admin
+  Username: root
   Password: bringthemhome
   ```
 * Access the API documentation at http://localhost:8000/docs. You can obtain a token by entering your username and password from the text box above. 
