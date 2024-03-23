@@ -1,16 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-  Typography
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    TextField,
+    Typography
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import toast from "react-hot-toast";
+import {useMutation} from "react-query";
+import {postRegister} from "@/api/endpoints";
 
 export default function RegistrationModal({open, handleClose}) {
     const [userData, setUserData] = useState({
@@ -42,21 +44,29 @@ export default function RegistrationModal({open, handleClose}) {
         setUserData({...userData, [e.target.name]: e.target.value});
     };
 
-    const handleRegister = async () => {
+    const registrationMutation = useMutation(postRegister, {
+        onSuccess: (data) => {
+            toast.success("Successfully registered!");
+            handleClose();
+        },
+        onError: (error) => {
+            console.error('There was a problem with the registration:', error);
+            toast.error("Registration failed. Please try again.");
+        },
+    });
+
+    const handleRegister = () => {
         if (userData.password !== userData.confirmPassword) {
-            toast.error('Passwords do not match!')
+            toast.error('Passwords do not match!');
             return;
         }
         if (userCaptchaInput !== captcha) {
-            toast.error('Captcha does not match!')
-            setCaptcha(generateCaptcha()); // Regenerate captcha for another try
-            setUserCaptchaInput('');
+            toast.error('Captcha does not match!');
+            // Consider regenerating captcha or handling this scenario appropriately
             return;
         }
-        // Implement your registration logic here
-        console.log(userData);
-        toast.success("Successfully registered, confirmation email sent!")
-        handleClose();
+
+        registrationMutation.mutate(userData);
     };
 
     return (

@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import { Button, Card, CardContent, TextField, Typography, Box, CircularProgress, IconButton, Tooltip, InputAdornment } from '@mui/material';
 import LockResetIcon from '@mui/icons-material/LockReset';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { styled } from '@mui/material/styles';
+import {postResetPassword} from "@/api/endpoints";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   maxWidth: 400,
@@ -48,28 +48,22 @@ export default function ResetPasswordPage() {
     return password.length >= 8 && /\d/.test(password) && /[a-zA-Z]/.test(password);
   };
 
-  const mutation = useMutation(newPassword => {
-    return axios.post(`http://localhost:8000/api/v1/users/reset-password/`, {}, {
-      params: { token, new_password: newPassword },
-      headers: {
-        'accept': 'application/json',
-        'Authorization': 'Bearer bringthemhome',
-      },
-    });
-  }, {
-    onSuccess: () => {
-      setIsSubmitting(false);
-      toast.success('Password reset successfully. You will be redirected to login.');
-      setTimeout(() => {
-        router.push('/login');
-      }, 1000); // Wait 5 seconds before redirecting
-    },
-    onError: (error) => {
-      setIsSubmitting(false);
-      console.error('Failed to reset password:', error);
-      toast.error('Failed to reset the password. Please try again or contact support if the problem persists.');
-    }
-  });
+ const mutation = useMutation(async (newPassword) => {
+  return postResetPassword({ token, newPassword });
+}, {
+  onSuccess: () => {
+    setIsSubmitting(false);
+    toast.success('Password reset successfully. You will be redirected to login.');
+    setTimeout(() => {
+      router.push('/login');
+    }, 1000); // Adjust the redirect timing if needed
+  },
+  onError: (error) => {
+    setIsSubmitting(false);
+    console.error('Failed to reset password:', error);
+    toast.error('Failed to reset the password. Please try again or contact support if the problem persists.');
+  }
+});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,7 +74,7 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" flexDirection="column">
+    <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh" flexDirection="column">
       <Toaster position="bottom-right" />
       <StyledCard>
         <CardContent>

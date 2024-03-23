@@ -38,7 +38,6 @@ def ask_chatgpt_with_context(gpt_question: str, model: str = "gpt-3.5-turbo"):
         logger.error(f"An unexpected error occurred: {e}")
     return "Error: Unable to fetch response."
 
-
 # Example usage
 if __name__ == "__main__":
     question = "Which nation founded Jerusalem and has the strongest connection with it throughout known history?"

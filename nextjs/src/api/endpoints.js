@@ -7,6 +7,12 @@ const jsonHeader = (token) => ({
   ...(token ? { 'api-key': token } : {}),
 });
 
+const staticBearerHeader = {
+      'accept': 'application/json',
+      'Authorization': 'Bearer bringthemhome'
+    }
+
+
 
 // Function to log-in and get token
 export const getToken = async (username, password) => {
@@ -95,4 +101,27 @@ export const forgotPassword = async (email) => {
             'Authorization': 'Bearer bringthemhome',
         },
     });
+};
+
+
+export const postResetPassword = async ({ token, newPassword }) => {
+  const response = await axios.post(`${API_BASE_URL}/users/reset-password/`, {}, {
+    params: { token, new_password: newPassword },
+    headers: staticBearerHeader,
+  });
+  return response.data;
+};
+
+
+export const postRegister = async (userData) => {
+  const response = await axios.post(`${API_BASE_URL}/register/`, {
+    email: userData.email,
+    full_name: userData.fullName,
+    password: userData.password,
+    username: userData.username,
+  }, {
+    headers: staticBearerHeader,
+  });
+
+  return response.data;
 };

@@ -1,4 +1,5 @@
-# Full-Stack User Management System with FastAPI, Next.js, and MUI
+# Full-Stack User Management System with FastAPI, Next.js, and MUI & More...
+**THE SYSTEM IS UNDER HEAVY DEVELOPMENT, STAY TUNED!**
 
 ## Overview
 
@@ -13,6 +14,7 @@ _Why python? In just a few days, I was able to develop an advanced system; imagi
 - **Protected API Documentation**: Access to API documentation is restricted, requiring authentication to prevent unauthorized use.
 - **Rate Limiting**: Defense against brute force attacks by limiting the number of login attempts.
 - **Data Encryption**: Encryption techniques are employed to securely store user data.
+
 
 ### User Management
 - **Registration and Login**: Efficient and secure processes for user registration and login.
@@ -63,7 +65,7 @@ _Why python? In just a few days, I was able to develop an advanced system; imagi
 * Create .env file, in the root folder.
   ```text
   # mongodb connection
-  mongodb_server=localhost
+  mongodb_server=mongodb
   mongodb_port=27017
   mongodb_username=bringthemhome
   mongodb_password=bringthemhome
@@ -80,9 +82,9 @@ _Why python? In just a few days, I was able to develop an advanced system; imagi
   open_ai_secret_key=sk-your_openai_key
   
   # default admin user
-  admin_username=admin
-  admin_password=bringthemhome
-  admin_email=israel@israeli.com
+  owner_username=admin
+  owner_password=bringthemhome
+  owner_email=israel@israeli.com
   
   # Initial email settings located in app/components/initial settings.py
   ```
@@ -97,7 +99,7 @@ _Why python? In just a few days, I was able to develop an advanced system; imagi
     ```shell
     docker-compose up -d --build
     ```
-  *in .env variables change mongodb_server=localhost to mongodb_server=mongodb if you are using docker-compose.* 
+  *in .env variables change mongodb_server=mongodb to mongodb_server=localhost if you running it locally.
 
 ### Start just the Backend
 Just the FastApi server. You must start mongodb server, redis server first. Change the username and password uri in the .env file above.

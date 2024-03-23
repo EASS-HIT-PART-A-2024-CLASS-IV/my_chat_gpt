@@ -13,9 +13,11 @@ from starlette.config import Config  # Configuration management, often used for 
 from app.components.auth.fastapi_auth import verify_credentials, get_secret_key
 from app.components.auth.jwt_token_handler import get_jwt_secret_key
 from app.components.initial_settings import create_owner, initialize_message_settings
-# Database clients
+
+#Database clients
 from app.db.mongoClient import async_mdb_client
 from app.db.redisClient import AsyncRedisClient
+
 # Routers
 from app.routers import auth, users, chatgpt, register, messages
 

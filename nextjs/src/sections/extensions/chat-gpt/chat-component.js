@@ -94,7 +94,7 @@ const ChatComponent = () => {
                 clearInterval(typingInterval);
                 setIsTyping(false); // Stop typing effect after the last character
             }
-        }, 50); // Adjust typing speed if necessary
+        }, 10); // Adjust typing speed if necessary
 
         setMessage('');
     };
