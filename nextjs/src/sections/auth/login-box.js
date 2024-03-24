@@ -68,7 +68,7 @@ export default function LoginBox() {
                 <Typography component="h1" variant="h5" style={{color: '#fff', marginBottom: '20px'}}>
                     Sign in
                 </Typography>
-                <Box component="form" noValidate sx={{ mt: 3, mb: 2, width: '100%' }} onSubmit={handleLogin}>
+                <Box component="form" noValidate sx={{mt: 3, mb: 2, width: '100%'}} onSubmit={handleLogin}>
                     <TextField
                         margin="normal"
                         required
@@ -81,7 +81,7 @@ export default function LoginBox() {
                         variant="outlined"
                         color="primary"
                         onChange={(e) => setUsername(e.target.value)}
-                        InputProps={{ style: { color: '#fff' } }}
+                        InputProps={{style: {color: '#fff'}}}
                     />
                     <TextField
                         margin="normal"
@@ -95,13 +95,13 @@ export default function LoginBox() {
                         variant="outlined"
                         color="primary"
                         onChange={(e) => setPassword(e.target.value)}
-                        InputProps={{ style: { color: '#fff' } }}
+                        InputProps={{style: {color: '#fff'}}}
                     />
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2' }}
+                        sx={{mt: 3, mb: 2, backgroundColor: '#1976d2'}}
                     >
                         Sign In
                     </Button>

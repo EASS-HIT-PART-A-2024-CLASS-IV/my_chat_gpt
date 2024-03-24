@@ -85,7 +85,7 @@ export const fetchChatResponse = async (question, accessToken, model) => {
 
 export const forgotPassword = async (email) => {
     await axios.post(`${API_BASE_URL}/users/forgot-password/`, {}, {
-        params: { email },
+        params: {email},
         headers: {
             'Accept': 'application/json',
             'Authorization': 'Bearer bringthemhome',
@@ -94,24 +94,24 @@ export const forgotPassword = async (email) => {
 };
 
 
-export const postResetPassword = async ({ token, newPassword }) => {
-  const response = await axios.post(`${API_BASE_URL}/users/reset-password/`, {}, {
-    params: { token, new_password: newPassword },
-    headers: staticBearerHeader,
-  });
-  return response.data;
+export const postResetPassword = async ({token, newPassword}) => {
+    const response = await axios.post(`${API_BASE_URL}/users/reset-password/`, {}, {
+        params: {token, new_password: newPassword},
+        headers: staticBearerHeader,
+    });
+    return response.data;
 };
 
 
 export const postRegister = async (userData) => {
-  const response = await axios.post(`${API_BASE_URL}/register/`, {
-    email: userData.email,
-    full_name: userData.fullName,
-    password: userData.password,
-    username: userData.username,
-  }, {
-    headers: staticBearerHeader,
-  });
+    const response = await axios.post(`${API_BASE_URL}/register/`, {
+        email: userData.email,
+        full_name: userData.fullName,
+        password: userData.password,
+        username: userData.username,
+    }, {
+        headers: staticBearerHeader,
+    });
 
-  return response.data;
+    return response.data;
 };

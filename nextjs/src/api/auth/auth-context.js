@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import Cookies from 'js-cookie';
-import { getProfile, logout as apiLogout } from "@/api/endpoints";
+import {getProfile, logout as apiLogout} from "@/api/endpoints";
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
     const [accessToken, setAccessToken] = useState(null);
     const [userProfile, setUserProfile] = useState(null); // Added state for user profile
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
         accessToken,
         setAccessToken: (token) => {
             const inTwoHours = new Date(new Date().getTime() + 2 * 60 * 60 * 1000);
-            Cookies.set('accessToken', token, { expires: inTwoHours, secure: true, sameSite: 'strict' }); // Cookie expires in 2 hours
+            Cookies.set('accessToken', token, {expires: inTwoHours, secure: true, sameSite: 'strict'}); // Cookie expires in 2 hours
             setAccessToken(token);
         },
         isAuthenticated,

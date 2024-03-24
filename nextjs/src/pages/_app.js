@@ -23,86 +23,86 @@ function MyApp({Component, pageProps}) {
     return (
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
-            <ThemeProvider theme={darkTheme}>
-                <CssBaseline/>
-                <Toaster position="bottom-right" reverseOrder={false}/>
-                <Particles id="tsparticles" init={particlesInit} options={{
-                    fpsLimit: 120,
-                    interactivity: {
-                        events: {
-                            onClick: {
-                                enable: false,
-                                mode: "push",
+                <ThemeProvider theme={darkTheme}>
+                    <CssBaseline/>
+                    <Toaster position="bottom-right" reverseOrder={false}/>
+                    <Particles id="tsparticles" init={particlesInit} options={{
+                        fpsLimit: 120,
+                        interactivity: {
+                            events: {
+                                onClick: {
+                                    enable: false,
+                                    mode: "push",
+                                },
+                                onHover: {
+                                    enable: false,
+                                    mode: "repulse",
+                                },
+                                resize: true,
                             },
-                            onHover: {
-                                enable: false,
-                                mode: "repulse",
-                            },
-                            resize: true,
-                        },
-                        modes: {
-                            push: {
-                                quantity: 4,
-                            },
-                            repulse: {
-                                distance: 200,
-                                duration: 0.4,
+                            modes: {
+                                push: {
+                                    quantity: 4,
+                                },
+                                repulse: {
+                                    distance: 200,
+                                    duration: 0.4,
+                                },
                             },
                         },
-                    },
-                    particles: {
-                        color: {
-                            value: "#ffffff",
-                        },
-                        links: {
-                            color: "#ffffff",
-                            distance: 150,
-                            enable: true,
-                            opacity: 0.1,
-                            width: 1,
-                        },
-                        move: {
-                            direction: "none",
-                            enable: true,
-                            outModes: {
-                                default: "bounce",
+                        particles: {
+                            color: {
+                                value: "#ffffff",
                             },
-                            random: false,
-                            speed: 1,
-                            straight: false,
-                        },
-                        number: {
-                            density: {
+                            links: {
+                                color: "#ffffff",
+                                distance: 150,
                                 enable: true,
-                                area: 800,
+                                opacity: 0.1,
+                                width: 1,
                             },
-                            value: 80,
+                            move: {
+                                direction: "none",
+                                enable: true,
+                                outModes: {
+                                    default: "bounce",
+                                },
+                                random: false,
+                                speed: 1,
+                                straight: false,
+                            },
+                            number: {
+                                density: {
+                                    enable: true,
+                                    area: 800,
+                                },
+                                value: 80,
+                            },
+                            opacity: {
+                                value: 0.5,
+                            },
+                            shape: {
+                                type: "circle",
+                            },
+                            size: {
+                                value: {min: 1, max: 5},
+                            },
                         },
-                        opacity: {
-                            value: 0.5,
-                        },
-                        shape: {
-                            type: "circle",
-                        },
-                        size: {
-                            value: {min: 1, max: 5},
-                        },
-                    },
-                    detectRetina: true,
-                }}/>
-                <ScrollToTop>
-                <Menu title="Your Website Name" navItems={menuItems}/>
-                <WrapperEffects effect={"softSlideInDown"} pageProps={pageProps}>
+                        detectRetina: true,
+                    }}/>
+                    <ScrollToTop>
+                        <Menu title="Your Website Name" navItems={menuItems}/>
+                        <WrapperEffects effect={"softSlideInDown"} pageProps={pageProps}>
 
-                    <Container sx={{mt: 3}}>
-                        <Component {...pageProps} />
-                    </Container>
+                            <Container sx={{mt: 3}}>
+                                <Component {...pageProps} />
+                            </Container>
 
-                    <Footer/>
+                            <Footer/>
 
-                </WrapperEffects>
+                        </WrapperEffects>
                     </ScrollToTop>
-            </ThemeProvider>
+                </ThemeProvider>
             </AuthProvider>
         </QueryClientProvider>
     );

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { useAuth } from "@/api/auth/auth-context"; // Ensure correct path
+import React, {useState} from 'react';
+import {useAuth} from "@/api/auth/auth-context"; // Ensure correct path
 import toast from "react-hot-toast";
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 import ConfirmModal from "@/components/confirmation-modal";
-import { logout as apiLogout } from "@/api/endpoints"; // Ensure correct path and avoid naming conflict
+import {logout as apiLogout} from "@/api/endpoints"; // Ensure correct path and avoid naming conflict
 
 export default function LogoutButton() {
-    const { accessToken, setAccessToken, setIsAuthenticated } = useAuth(); // Correctly destructure needed functions
+    const {accessToken, setAccessToken, setIsAuthenticated} = useAuth(); // Correctly destructure needed functions
     const router = useRouter();
     const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
 

@@ -11,7 +11,8 @@ import {
     TableBody,
     TableCell,
     TableContainer,
-    TableHead, TablePagination,
+    TableHead,
+    TablePagination,
     TableRow
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -41,18 +42,18 @@ function UserTable() {
     const [openDialog, setOpenDialog] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
     const queryClient = useQueryClient();
-     const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const {data: users, isLoading, isError} = useQuery('users', () => fetchUsers(accessToken));
 
-     const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset page to 0 when changing the number of rows per page
-  };
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0); // Reset page to 0 when changing the number of rows per page
+    };
 
     const updateMutation = useMutation((user) => updateUser(user, accessToken), {
         onSuccess: () => {
@@ -116,7 +117,7 @@ function UserTable() {
         setCurrentUser(null); // Reset current user
     };
 
-      const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
 
 
     return (
@@ -126,49 +127,50 @@ function UserTable() {
                     <AddIcon/>
                 </Fab>
             </Box>
-              <TableContainer component={Paper} sx={{ mt: 3 }}>
-        <Table aria-label="user table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Status</TableCell>
-              <TableCell>Username</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Full Name</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell align="right">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0 ? users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : users).map((user) => (
-              <TableRow key={user._id}>
-                <TableCell>{user.disabled ? <RemoveCircleOutlineIcon color="error" /> : <CheckCircleOutlineIcon color="success" />}</TableCell>
-                <TableCell>{user.username}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.full_name}</TableCell>
-                <TableCell>{user.role}</TableCell>
-                <TableCell align="right">
-                  <IconButton onClick={() => handleEdit(user)}><EditIcon /></IconButton>
-                  <IconButton onClick={() => handleDelete(user._id)}><DeleteIcon /></IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25, 50, { value: -1, label: 'All' }]}
-          component="div"
-          count={users.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </TableContainer>
+            <TableContainer component={Paper} sx={{mt: 3}}>
+                <Table aria-label="user table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Status</TableCell>
+                            <TableCell>Username</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Full Name</TableCell>
+                            <TableCell>Role</TableCell>
+                            <TableCell align="right">Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {(rowsPerPage > 0 ? users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : users).map((user) => (
+                            <TableRow key={user._id}>
+                                <TableCell>{user.disabled ? <RemoveCircleOutlineIcon color="error"/> :
+                                    <CheckCircleOutlineIcon color="success"/>}</TableCell>
+                                <TableCell>{user.username}</TableCell>
+                                <TableCell>{user.email}</TableCell>
+                                <TableCell>{user.full_name}</TableCell>
+                                <TableCell>{user.role}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleEdit(user)}><EditIcon/></IconButton>
+                                    <IconButton onClick={() => handleDelete(user._id)}><DeleteIcon/></IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                        {emptyRows > 0 && (
+                            <TableRow style={{height: 53 * emptyRows}}>
+                                <TableCell colSpan={6}/>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25, 50, {value: -1, label: 'All'}]}
+                    component="div"
+                    count={users.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </TableContainer>
             {currentUser && (
                 <UserDialog
                     open={openDialog}

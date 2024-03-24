@@ -2,7 +2,7 @@ import React from 'react';
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import CoffeeIcon from '@mui/icons-material/Coffee';
-import {Box, IconButton, Tooltip, Typography, useTheme, Link} from '@mui/material';
+import {Box, IconButton, Link, Tooltip, Typography, useTheme} from '@mui/material';
 
 const Footer = () => {
     const theme = useTheme();
@@ -29,7 +29,7 @@ const Footer = () => {
                     rel="noopener noreferrer"
                     underline="none"
                     color="inherit"
-                    sx={{ mx: 0.5 }}
+                    sx={{mx: 0.5}}
                 >
                     George Khananaev
                 </Link>
@@ -42,7 +42,7 @@ const Footer = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         size="small"
-                        sx={{ p: 0.3, m: 0 }}
+                        sx={{p: 0.3, m: 0}}
                     >
                         <GitHubIcon/>
                     </IconButton>
@@ -55,7 +55,7 @@ const Footer = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         size="small"
-                        sx={{ p: 0.3, m: 0 }}
+                        sx={{p: 0.3, m: 0}}
                     >
                         <LinkedInIcon/>
                     </IconButton>
@@ -68,7 +68,7 @@ const Footer = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         size="small"
-                        sx={{ p: 0.3, m: 0 }}
+                        sx={{p: 0.3, m: 0}}
                     >
                         <CoffeeIcon/>
                     </IconButton>
