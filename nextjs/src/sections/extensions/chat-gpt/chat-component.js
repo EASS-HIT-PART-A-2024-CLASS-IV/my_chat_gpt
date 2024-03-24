@@ -22,7 +22,7 @@ import {
     Typography
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import {useAuth} from '@/hooks/auth-context';
+import {useAuth} from '@/api/auth/auth-context';
 import {fetchChatResponse} from "@/api/endpoints";
 
 const saveChatsToCache = (chats) => {

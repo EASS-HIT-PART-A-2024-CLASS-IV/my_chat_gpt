@@ -1,17 +1,7 @@
 import axios from "axios";
+import {jsonHeader, staticBearerHeader} from "@/api/headers";
 
-const API_BASE_URL = 'http://localhost:8000/api/v1';
-
-const jsonHeader = (token) => ({
-  'Accept': 'application/json',
-  ...(token ? { 'api-key': token } : {}),
-});
-
-const staticBearerHeader = {
-      'accept': 'application/json',
-      'Authorization': 'Bearer bringthemhome'
-    }
-
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8000/api/v1';
 
 
 // Function to log-in and get token
@@ -74,7 +64,7 @@ export const fetchChatResponse = async (question, accessToken, model) => {
     // Simulated API call
     console.log("Sending question to the API:", question, "with model", model);
 
-    const url = new URL('http://localhost:8000/api/v1/chat/');
+    const url = new URL(`${API_BASE_URL}/chat/`);
     url.searchParams.append('question', question);
     url.searchParams.append('model', model);
 

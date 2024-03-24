@@ -6,7 +6,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import ExtensionIcon from '@mui/icons-material/Extension';
 import React from "react";
-import { ChatGptIcon } from "@/theme/icons/menu-icons";
+import { ChatGptIcon } from "@/theme/menu-icons";
 
 const iconStyle = { height: 16, width: 16, mb: "-3px", mr: 0.5 };
 

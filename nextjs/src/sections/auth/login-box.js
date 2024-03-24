@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Box, Button, Container, TextField, Typography} from '@mui/material';
-import {useAuth} from "@/hooks/auth-context";
+import {useAuth} from "@/api/auth/auth-context";
 import toast from "react-hot-toast";
 import {useRouter} from "next/router";
 import {getToken} from "@/api/endpoints";

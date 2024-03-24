@@ -2,7 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import Loading from "@/components/loading";
-import {useAuth} from "@/hooks/auth-context"; // Adjust the import path as necessary
+import {useAuth} from "@/api/auth/auth-context"; // Adjust the import path as necessary
 
 const useAuthenticatedRoute = (WrappedComponent, redirectUrl = '/login') => {
     return function ProtectedRoute(props) {

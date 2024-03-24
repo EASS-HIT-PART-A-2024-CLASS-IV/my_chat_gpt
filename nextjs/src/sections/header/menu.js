@@ -19,10 +19,10 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useRouter } from "next/router";
 
-import { useAuth } from "@/hooks/auth-context";
+import { useAuth } from "@/api/auth/auth-context";
 import LogoutButton from "@/sections/auth/logout";
 import {menuItems} from "@/sections/header/menu-items";
-import { LogoIcon } from "@/theme/icons/menu-icons";
+import { LogoIcon } from "@/theme/menu-icons";
 
 export default function Menu({ title }) {
   const { isAuthenticated } = useAuth();

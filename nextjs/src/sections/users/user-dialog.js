@@ -132,6 +132,7 @@ function UserDialog({ open, setOpen, user, onSave }) {
         <FormControl fullWidth margin="dense">
           <InputLabel>Role</InputLabel>
           <Select
+            disabled={formData.role === "owner"}
             name="role"
             value={formData.role}
             label="Role"
@@ -140,6 +141,7 @@ function UserDialog({ open, setOpen, user, onSave }) {
           >
             <MenuItem value="user">User</MenuItem>
             <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="owner">Owner</MenuItem>
           </Select>
         </FormControl>
         <FormControlLabel

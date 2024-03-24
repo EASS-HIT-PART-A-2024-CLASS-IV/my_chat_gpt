@@ -14,7 +14,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import { amber, blue, deepPurple, green, pink, red } from '@mui/material/colors';
 import Loading from "@/components/loading";
 import { getProfile } from "@/api/endpoints";
-import { useAuth } from "@/hooks/auth-context";
+import { useAuth } from "@/api/auth/auth-context";
 
 function UserProfile() {
   const { accessToken } = useAuth();

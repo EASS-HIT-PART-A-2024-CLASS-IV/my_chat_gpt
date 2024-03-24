@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Container, Typography, Paper, Grid, Button } from '@mui/material';
 import useAuthenticatedRoute from "@/hooks/use-authenticated-route.js";
-import {useAuth} from "@/hooks/auth-context";
+import {useAuth} from "@/api/auth/auth-context";
 
 const Dashboard = () => {
     const { userProfile } = useAuth();

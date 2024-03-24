@@ -1,4 +1,4 @@
-import '@/theme/css/globals.css'
+import '@/styles/globals.css'
 import React, {useCallback} from 'react';
 import {Container, CssBaseline, ThemeProvider} from '@mui/material';
 import Menu from "@/sections/header/menu";
@@ -6,7 +6,7 @@ import {menuItems} from "@/sections/header/menu-items";
 import WrapperEffects from "@/components/warp-effects";
 import {Toaster} from "react-hot-toast";
 import Footer from "@/sections/footer/footer";
-import {AuthProvider} from "@/hooks/auth-context";
+import {AuthProvider} from "@/api/auth/auth-context";
 import {QueryClient, QueryClientProvider} from "react-query";
 import {darkTheme} from "@/theme/dark-theme";
 import {loadSlim} from "tsparticles-slim";

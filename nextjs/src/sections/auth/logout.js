@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from "@/hooks/auth-context"; // Ensure correct path
+import { useAuth } from "@/api/auth/auth-context"; // Ensure correct path
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import ConfirmModal from "@/components/confirmation-modal";
