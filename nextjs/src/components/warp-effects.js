@@ -2,29 +2,37 @@ import styled from '@emotion/styled';
 import React, {useEffect, useState} from 'react';
 
 const animations = {
-    fadeIn: 'fadeIn 1s ease-out forwards',
-    fadeOut: 'fadeOut 1s ease-out forwards',
-    softSlideInLeft: 'softSlideInLeft 0.8s ease-out forwards',
-    softSlideInRight: 'softSlideInRight 0.8s ease-out forwards',
-    softSlideInUp: 'softSlideInUp 0.8s ease-out forwards',
-    softSlideInDown: 'softSlideInDown 0.8s ease-out forwards',
-    gentleZoomIn: 'gentleZoomIn 0.8s ease-out forwards',
-    gentleZoomOut: 'gentleZoomOut 1.2s ease-out forwards',
-    softRotateIn: 'softRotateIn 1.2s ease-out forwards',
-    softBounceIn: 'softBounceIn 1.2s ease-out forwards',
-    fadeInLeft: 'fadeInLeft 1s ease-out forwards',
-    fadeInRight: 'fadeInRight 1s ease-out forwards',
-    fadeInUp: 'fadeInUp 1s ease-out forwards',
-    fadeInDown: 'fadeInDown 1s ease-out forwards',
-    crossFadeIn: 'crossFadeIn 1.5s ease-out forwards',
-    quickFlipInX: 'quickFlipInX 0.6s ease-out forwards',
-    quickFlipInY: 'quickFlipInY 0.6s ease-out forwards',
-    fadeSlideDown: 'fadeSlideDown 1s ease-out forwards',
+    fadeIn: 'fadeIn 0.8s ease-out forwards',
+    fadeOut: 'fadeOut 0.8s ease-out forwards',
+    softSlideInLeft: 'softSlideInLeft 0.6s ease-in-out forwards',
+    softSlideInRight: 'softSlideInRight 0.6s ease-in-out forwards',
+    softSlideInUp: 'softSlideInUp 0.6s ease-in-out forwards',
+    softSlideInDown: 'softSlideInDown 0.6s ease-in-out forwards',
+    gentleZoomIn: 'gentleZoomIn 0.6s ease-in-out forwards',
+    gentleZoomOut: 'gentleZoomOut 0.8s ease-in-out forwards',
+    softRotateIn: 'softRotateIn 1s ease-in-out forwards',
+    softBounceIn: 'softBounceIn 1s ease-in-out forwards',
+    fadeInLeft: 'fadeInLeft 0.8s ease-in-out forwards',
+    fadeInRight: 'fadeInRight 0.8s ease-in-out forwards',
+    fadeInUp: 'fadeInUp 0.8s ease-in-out forwards',
+    fadeInDown: 'fadeInDown 0.8s ease-in-out forwards',
+    crossFadeIn: 'crossFadeIn 1.2s ease-in-out forwards',
+    quickFlipInX: 'quickFlipInX 0.5s ease-in-out forwards',
+    quickFlipInY: 'quickFlipInY 0.5s ease-in-out forwards',
+    fadeSlideDown: 'fadeSlideDown 0.8s ease-in-out forwards',
     pulse: 'pulse 1.5s ease-in-out infinite',
 };
 
 const WrapperEffects = styled.div`
-    animation: ${({isVisible, effect}) => isVisible ? animations[effect] : 'none'};
+    display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
+    animation: ${({ effect }) => animations[effect] || 'none'};
+    will-change: transform, opacity;
+
+    @keyframes fadeInVisible {
+        to {
+            opacity: 1;
+        }
+    }
     @keyframes fadeIn {
         from {
             opacity: 0.5;
@@ -78,7 +86,7 @@ const WrapperEffects = styled.div`
 
     @keyframes softSlideInDown {
         from {
-            transform: translateY(-100px);
+            transform: translateY(-150px);
             opacity: 0;
         }
         to {
@@ -231,25 +239,29 @@ const WrapperEffects = styled.div`
     }
 `;
 
-const WarpEffect = ({children, effect, pageProps}) => {
-    const [isVisible, setIsVisible] = useState(false);
+const WarpEffect = ({ children, effect, pageProps }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
-    // This effect hook runs on mount and every time pageProps change
-    useEffect(() => {
-        setIsVisible(false); // Reset visibility to false to ensure animation can re-trigger
-        const timeout = setTimeout(() => setIsVisible(true), 50); // Short delay to ensure re-triggering of animation
-        return () => clearTimeout(timeout); // Cleanup timeout on component unmount or before running the effect again
-    }, [pageProps]); // Dependency array includes pageProps to listen for changes
+  // Effect for handling animations on pageProps change
+  useEffect(() => {
+    // Trigger the animation by first hiding the component, then revealing it
+    // This approach ensures the animation plays on initial mount and page changes.
+    function triggerAnimation() {
+      setIsVisible(false);
+      // Using a timeout to ensure there's a clear distinction between the hide and show states
+      setTimeout(() => setIsVisible(true), 10); // Small delay to reset the animation
+    }
 
+    triggerAnimation();
 
-    useEffect(() => {
-        setIsVisible(true);
-    }, []);
+    // Optional: If you want to reset the animation before it starts, you can listen for changes in specific props
+  }, [pageProps]); // Assuming pageProps change signifies a new page
 
-    return <WrapperEffects isVisible={isVisible}
-                           effect={effect}>
-        {children}
-    </WrapperEffects>;
+  return (
+    <WrapperEffects isVisible={isVisible} effect={effect}>
+      {children}
+    </WrapperEffects>
+  );
 };
 
 export default WarpEffect;

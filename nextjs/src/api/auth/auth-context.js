@@ -59,8 +59,8 @@ export const AuthProvider = ({children}) => {
     const value = {
         accessToken,
         setAccessToken: (token) => {
-            const inTwoHours = new Date(new Date().getTime() + 2 * 60 * 60 * 1000);
-            Cookies.set('accessToken', token, {expires: inTwoHours, secure: true, sameSite: 'strict'}); // Cookie expires in 2 hours
+            const oneDay = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+            Cookies.set('accessToken', token, {expires: oneDay, secure: true, sameSite: 'strict'}); // Cookie expires in 24 hours
             setAccessToken(token);
         },
         isAuthenticated,

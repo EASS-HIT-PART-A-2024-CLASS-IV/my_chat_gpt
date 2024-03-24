@@ -85,11 +85,11 @@ export default function Menu({title}) {
             <CssBaseline/>
             <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
                 <Toolbar>
-                    <Box sx={{my: 1}}>
-                        <LogoIcon width={isMobile ? 36 : 48} height={isMobile ? 36 : 48}/>
+                    <Box sx={{my: 1, cursor: 'pointer'}} onClick={() => router.push('/')}>
+                        <LogoIcon width={isMobile ? 36 : 48} height={isMobile ? 36 : 48} />
 
                     </Box>
-                    <Typography variant="h6" component="div" sx={{flexGrow: 1, ml: 2}}>
+                    <Typography variant="h6" component="div" sx={{flexGrow: 1, ml: 2, cursor: 'pointer'}} onClick={() => router.push('/')}>
                         {title}
                     </Typography>
                     {isMobile ? (
