@@ -5,7 +5,9 @@
 
 A full-stack system utilizing FastAPI with asynchronous capabilities on the backend and Next.js for the frontend showcases the robustness of Python in server-side development. This architecture provides a scalable, efficient solution that leverages FastAPI's high performance and ease of use for creating APIs, alongside Next.js for a reactive and server-side rendered user interface. The asynchronous nature of the backend ensures non-blocking operation, enhancing the system's ability to handle high volumes of requests simultaneously, which is ideal for real-time applications. This combination offers a modern, full-stack framework that is both powerful and developer-friendly, demonstrating the versatility of Python in web development.
 
-_Why python? In just a few days, I was able to develop an advanced system; imagine the vast expanse of innovation we could unlock with several months at our disposal. The only limit to what we can achieve lies in the breadth of our imagination. - George Khananaev_
+_"Why python? In just a few days, I was able to develop an advanced system; imagine the vast expanse of innovation we
+could unlock with several months at our disposal. The only limit to what we can achieve lies in the breadth of our
+imagination." - George Khananaev_
 
 ## Key Features
 
@@ -62,47 +64,75 @@ _Why python? In just a few days, I was able to develop an advanced system; imagi
    git clone https://github.com/georgekhananaev/fullstack-user-management-system.git
    ```
 
-* Create .env file, in the root folder.
-  ```text
-  # mongodb connection
-  mongodb_server=mongodb
-  mongodb_port=27017
-  mongodb_username=bringthemhome
-  mongodb_password=bringthemhome
-  
-  # fastapi
-  fastapi_ui_username=bringthemhome
-  fastapi_ui_password=bringthemhome
-  jwt_secret_key=bringthemhome
-  static_bearer_secret_key=bringthemhome
-  algorithm=HS256
-  
-  #chatgpt
-  open_ai_organization=org-your_openai_key
-  open_ai_secret_key=sk-your_openai_key
-  
-  # default root user
-  owner_username=root
-  owner_password=bringthemhome
-  owner_email=israel@israeli.com
-  
-  # Initial email settings located in app/components/initial settings.py
-  ```
-
-
 ### Full Docker Installation (4 Containers)
-* This is complete installation, mongodb and redis servers included.
-    ```shell
-    docker-compose build --no-cache ; docker-compose up -d
-    ``` 
-  or
-    ```shell
-    docker-compose up -d --build
-    ```
-  *in .env variables change mongodb_server=mongodb to mongodb_server=localhost if you running it locally.
 
+first create chatgpt_credentials.env or modify it in "generate_env.py"
+
+```
+# chatgpt
+open_ai_organization=org-your_openai_key
+open_ai_secret_key=sk-your_openai_key
+
+```
+
+* This is complete installation, mongodb and redis servers included.
+
+  PowerShell / Linux
+    ```shell
+    python generate_env.py ; docker-compose build --no-cache ; docker-compose up -d
+    ``` 
+  CMD
+    ```shell
+    python generate_env.py && docker-compose build --no-cache && docker-compose up -d
+    ```
+  Manually
+  ```shell
+    python generate_env.py
+    ```
+  ```shell
+    docker-compose build --no-cache
+    ```
+    ```shell
+    docker-compose up -d
+    ```
+  
 ### Start just the Backend
 Just the FastApi server. You must start mongodb server, redis server first. Change the username and password uri in the .env file above.
+
+<details>
+<summary><b>Create a .env file in the root folder or run" python generate_env.py</b></summary>
+<p>
+
+```text
+# mongodb connection
+mongodb_server=localhost
+mongodb_port=27017
+mongodb_username=bringthemhome
+mongodb_password=bringthemhome
+
+# fastapi
+fastapi_ui_username=bringthemhome
+fastapi_ui_password=bringthemhome
+jwt_secret_key=bringthemhome
+static_bearer_secret_key=bringthemhome
+algorithm=HS256
+
+# chatgpt
+open_ai_organization=org-your_openai_key
+open_ai_secret_key=sk-your_openai_key
+
+# default root user
+owner_username=root
+owner_password=bringthemhome
+owner_email=israel@israeli.com
+
+# Initial email settings located in app/components/initial settings.py
+```
+
+Please note: mongodb uri should be "localhost" if you running it locally, or "mongodb" if you running it inside a docker
+container
+</p>
+</details>
 
 * Update PIP && Install requirements.txt
     ```shell
@@ -122,6 +152,23 @@ Just the FastApi server. You must start mongodb server, redis server first. Chan
 You need to have Node.js installed on your machine.
 Visit https://nodejs.org/ to download and install the latest version.
 
+<details>
+<summary><b>Create a .env file if needed, otherwise default is loaded.</b></summary>
+<p>
+
+```text
+# Set the URL for your backend here
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
+
+# The default value is 'bringthemhome'. Ensure this matches the 'static_bearer_secret_key' set in your backend.
+NEXT_PUBLIC_API_KEY=static_bearer_secret_key
+```
+
+Please note: mongodb uri should be "localhost" if you running it locally, or "mongodb" if you running it inside a docker
+container
+</p>
+</details>
+
 * <b>For Development:</b>
 
     ```shell
@@ -139,6 +186,11 @@ Visit https://nodejs.org/ to download and install the latest version.
     npm start
     ```
 
+## Uninstall
+
+  ```shell
+  docker-compose down -v
+  ```
 
 ## Usage
 

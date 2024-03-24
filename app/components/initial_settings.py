@@ -1,5 +1,7 @@
 import os
 
+import pymongo
+from pymongo.errors import DuplicateKeyError
 from dotenv import load_dotenv
 
 from app.classes.User import UserCreate
@@ -23,6 +25,10 @@ async def check_key_not_expired(redis_client, key):
     else:
         return False
 
+
+async def create_indexes():
+    await async_database.users.create_index("email", unique=True)
+    await async_database.users.create_index("username", unique=True)
 
 async def create_owner():
     # Fetch owner's email and username from environment variables
@@ -53,7 +59,12 @@ async def create_owner():
     }
 
     # Create the user with the specified admin user details
-    await create_user(UserCreate(**admin_user), "system_init")
+    try:
+        await create_user(UserCreate(**admin_user), "system_init")
+        logger.info("Owner created successfully.")
+    except pymongo.errors.DuplicateKeyError:
+        logger.info("Owner already exists, skipping creation.")
+
     logger.info("Owner created successfully.")
 
 

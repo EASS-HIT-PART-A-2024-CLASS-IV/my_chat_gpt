@@ -4,9 +4,9 @@ FROM node:21.7.1-slim
 # Set the working directory in the container
 WORKDIR /nextjs
 
-# Set environment variables
-ENV API_BASE_URL="http://localhost:8000/api/v1"
-ENV NEXT_PUBLIC_API_KEY="bringthemhome"
+## Set environment variables
+#ENV API_BASE_URL="http://localhost:8000/api/v1"
+#ENV NEXT_PUBLIC_API_KEY="bringthemhome"
 
 # Copy the current directory contents into the container at /app
 COPY . .

@@ -12,10 +12,10 @@ from starlette.config import Config  # Configuration management, often used for 
 # Local imports for authentication components and initial settings setup
 from app.components.auth.fastapi_auth import verify_credentials, get_secret_key
 from app.components.auth.jwt_token_handler import get_jwt_secret_key
-from app.components.initial_settings import create_owner, initialize_message_settings
+from app.components.initial_settings import create_owner, initialize_message_settings, create_indexes
 
 #Database clients
-from app.db.mongoClient import async_mdb_client
+from app.db.mongoClient import async_mdb_client, validate_mongodb_connection
 from app.db.redisClient import AsyncRedisClient
 
 # Routers
@@ -212,6 +212,9 @@ async def startup_event():
     unused variables (like 'e' for the exception). It's a good practice to log these exceptions
     to understand what went wrong.
     """
+
+    await validate_mongodb_connection()  # Validate MongoDB connection
+    await create_indexes()
 
     app.state.redis = await AsyncRedisClient.get_instance()
 
