@@ -1,13 +1,12 @@
 # Full-Stack User Management System with FastAPI, Next.js, and MUI & More...
+
 **THE SYSTEM IS UNDER HEAVY DEVELOPMENT, STAY TUNED!**
 
 ## Overview
 
 A full-stack system utilizing FastAPI with asynchronous capabilities on the backend and Next.js for the frontend showcases the robustness of Python in server-side development. This architecture provides a scalable, efficient solution that leverages FastAPI's high performance and ease of use for creating APIs, alongside Next.js for a reactive and server-side rendered user interface. The asynchronous nature of the backend ensures non-blocking operation, enhancing the system's ability to handle high volumes of requests simultaneously, which is ideal for real-time applications. This combination offers a modern, full-stack framework that is both powerful and developer-friendly, demonstrating the versatility of Python in web development.
 
-_"Why python? In just a few days, I was able to develop an advanced system; imagine the vast expanse of innovation we
-could unlock with several months at our disposal. The only limit to what we can achieve lies in the breadth of our
-imagination." - George Khananaev_
+_"Why python? In just a few days, I was able to develop an advanced system; imagine the vast expanse of innovation we could unlock with several months at our disposal. The only limit to what we can achieve lies in the breadth of our imagination." - George Khananaev_
 
 ## Key Features
 
@@ -16,7 +15,6 @@ imagination." - George Khananaev_
 - **Protected API Documentation**: Access to API documentation is restricted, requiring authentication to prevent unauthorized use.
 - **Rate Limiting**: Defense against brute force attacks by limiting the number of login attempts.
 - **Data Encryption**: Encryption techniques are employed to securely store user data.
-
 
 ### User Management
 - **Registration and Login**: Efficient and secure processes for user registration and login.
@@ -57,39 +55,40 @@ imagination." - George Khananaev_
 - An instance of MongoDB
 - An instance of Redis
 
-
 ## Installation
-* Clone the project repository:
+
+### Clone the Repository
    ```shell
    git clone https://github.com/georgekhananaev/fullstack-user-management-system.git
    ```
 
-### Full Docker Installation (4 Containers)
+### Docker Installation for Full Deployment (4 Containers)
+1. create chatgpt_credentials.env file or revise the code in "generate_env.py"
 
-first create chatgpt_credentials.env or modify it in "generate_env.py"
+* Example: 
+    ```
+    # chatgpt
+    open_ai_organization=org-your_openai_key
+    open_ai_secret_key=sk-your_openai_key
+    
+    ```
 
-```
-# chatgpt
-open_ai_organization=org-your_openai_key
-open_ai_secret_key=sk-your_openai_key
+2. This is complete installation, mongodb and redis servers included.
 
-```
 
-* This is complete installation, mongodb and redis servers included.
-
-  PowerShell / Linux
+* PowerShell / Linux (Option 1)
     ```shell
     python generate_env.py ; docker-compose build --no-cache ; docker-compose up -d
     ``` 
-  CMD
+* CMD (Option 2)
     ```shell
     python generate_env.py && docker-compose build --no-cache && docker-compose up -d
     ```
-  Manually
-  ```shell
+* Manual (Option 3)
+    ```shell
     python generate_env.py
     ```
-  ```shell
+    ```shell
     docker-compose build --no-cache
     ```
     ```shell
@@ -100,7 +99,7 @@ open_ai_secret_key=sk-your_openai_key
 Just the FastApi server. You must start mongodb server, redis server first. Change the username and password uri in the .env file above.
 
 <details>
-<summary><b>Create a .env file in the root folder or run" python generate_env.py</b></summary>
+<summary><b>Create a .env File or Run `python generate_env.py`</b></summary>
 <p>
 
 ```text
@@ -153,7 +152,7 @@ You need to have Node.js installed on your machine.
 Visit https://nodejs.org/ to download and install the latest version.
 
 <details>
-<summary><b>Create a .env file if needed, otherwise default is loaded.</b></summary>
+<summary><b>Create a .env File If Necessary; Otherwise, Default Settings Are Loaded</b></summary>
 <p>
 
 ```text
@@ -164,7 +163,7 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
 NEXT_PUBLIC_API_KEY=static_bearer_secret_key
 ```
 
-Please note: mongodb uri should be "localhost" if you running it locally, or "mongodb" if you running it inside a docker
+Please note: If you are running MongoDB locally, the URI should be set to "localhost". If you are running MongoDB inside a Docker container, the URI should be set to "mongodb".
 container
 </p>
 </details>
@@ -221,6 +220,8 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/georgekhananaev)
 
-If you find my work helpful, consider supporting me by buying me a coffee at [Buy Me A Coffee](https://www.buymeacoffee.com/georgekhananaev). 
+If you find my work helpful, consider supporting me by buying me a coffee at [Buy Me A Coffee](https://www.buymeacoffee.com/georgekhananaev).
 
-Your support helps me continue to create and maintain useful projects. Thank you!
+Your support helps me continue to create and maintain useful projects. 
+
+Thank you!
