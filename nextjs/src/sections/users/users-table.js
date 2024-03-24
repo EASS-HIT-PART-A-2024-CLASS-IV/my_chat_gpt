@@ -13,7 +13,8 @@ import {
     TableContainer,
     TableHead,
     TablePagination,
-    TableRow
+    TableRow,
+    Tooltip
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -123,9 +124,11 @@ function UserTable() {
     return (
         <>
             <Box sx={{display: "flex", justifyContent: "end"}}>
-                <Fab size="small" color="primary" aria-label="add" onClick={handleAddUser}>
-                    <AddIcon/>
-                </Fab>
+                <Tooltip title={"Add new user"}>
+                    <Fab size="small" color="primary" aria-label="add" onClick={handleAddUser}>
+                        <AddIcon/>
+                    </Fab>
+                </Tooltip>
             </Box>
             <TableContainer component={Paper} sx={{mt: 3}}>
                 <Table aria-label="user table">
@@ -142,15 +145,32 @@ function UserTable() {
                     <TableBody>
                         {(rowsPerPage > 0 ? users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : users).map((user) => (
                             <TableRow key={user._id}>
-                                <TableCell>{user.disabled ? <RemoveCircleOutlineIcon color="error"/> :
-                                    <CheckCircleOutlineIcon color="success"/>}</TableCell>
+                                <TableCell>
+                                    {user.disabled ? (
+                                        <Tooltip title="Disabled">
+                                            <IconButton>
+                                                <RemoveCircleOutlineIcon color="error"/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    ) : (
+                                        <Tooltip title="Active">
+                                            <IconButton>
+                                                <CheckCircleOutlineIcon color="success"/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    )}
+                                </TableCell>
                                 <TableCell>{user.username}</TableCell>
                                 <TableCell>{user.email}</TableCell>
                                 <TableCell>{user.full_name}</TableCell>
                                 <TableCell>{user.role}</TableCell>
                                 <TableCell align="right">
+                                    <Tooltip title={"Edit the user"}>
                                     <IconButton onClick={() => handleEdit(user)}><EditIcon/></IconButton>
+                                    </Tooltip>
+                                    <Tooltip title={"Delete the user"}>
                                     <IconButton onClick={() => handleDelete(user._id)}><DeleteIcon/></IconButton>
+                                    </Tooltip>
                                 </TableCell>
                             </TableRow>
                         ))}
