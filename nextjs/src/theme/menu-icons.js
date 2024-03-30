@@ -17,7 +17,6 @@ export function ChatGptIcon({width = 18, height = 18, fill = "white"}) {
 
 export function LogoIcon({width, height}) {
     return (
-        // All rights reserved to George Khananaev. Please refrain from using my logo in any production environment without prior authorization. Any usage of the logo requires explicit permission from me.
         <svg
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"

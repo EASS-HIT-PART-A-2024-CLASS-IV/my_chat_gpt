@@ -1,7 +1,6 @@
 import React from 'react';
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import CoffeeIcon from '@mui/icons-material/Coffee';
 import {Box, IconButton, Link, Tooltip, Typography, useTheme} from '@mui/material';
 
 const Footer = () => {
@@ -24,21 +23,21 @@ const Footer = () => {
             <Typography variant="body1">
                 © Copyright {currentYear} |
                 <Link
-                    href="https://github.com/georgekhananaev"
+                    href="https://github.com/itayMenashe7"
                     target="_blank"
                     rel="noopener noreferrer"
                     underline="none"
                     color="inherit"
                     sx={{mx: 0.5}}
                 >
-                    George Khananaev
+                    Itay Menashe
                 </Link>
             </Typography>
             <Box sx={{mt: 1}}>
                 <Tooltip title="GitHub">
                     <IconButton
                         component="a"
-                        href="https://github.com/georgekhananaev"
+                        href="https://github.com/itayMenashe7"
                         target="_blank"
                         rel="noopener noreferrer"
                         size="small"
@@ -51,26 +50,13 @@ const Footer = () => {
                 <Tooltip title="LinkedIn">
                     <IconButton
                         component="a"
-                        href="https://www.linkedin.com/in/georgekhananaev/"
+                        href="https://www.linkedin.com/in/itay-menashe-0a827a225/"
                         target="_blank"
                         rel="noopener noreferrer"
                         size="small"
                         sx={{p: 0.3, m: 0}}
                     >
                         <LinkedInIcon/>
-                    </IconButton>
-                </Tooltip>
-
-                <Tooltip title="Buy me a coffee">
-                    <IconButton
-                        component="a"
-                        href="https://www.buymeacoffee.com/georgekhananaev"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size="small"
-                        sx={{p: 0.3, m: 0}}
-                    >
-                        <CoffeeIcon/>
                     </IconButton>
                 </Tooltip>
             </Box>

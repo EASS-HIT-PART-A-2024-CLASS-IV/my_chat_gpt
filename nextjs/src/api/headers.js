@@ -5,5 +5,5 @@ export const jsonHeader = (token) => ({
 
 export const staticBearerHeader = {
     'accept': 'application/json',
-    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY || 'bringthemhome'}`,
+    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY || 'bringthemhome'}`
 };
