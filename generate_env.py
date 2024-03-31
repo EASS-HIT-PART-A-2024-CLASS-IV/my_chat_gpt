@@ -43,7 +43,7 @@ fastapi_ui_username=bringthemhome
 fastapi_ui_password=bringthemhome
 
 # static_bearer_secret_key to protect your register from unauthorized access
-static_bearer_secret_key=BHfvgUGeE7VNMo9mXqfEgoSI5eKXwhHx
+static_bearer_secret_key={static_bearer_secret_key}
 jwt_secret_key=bringthemhome
 algorithm=HS256
 
